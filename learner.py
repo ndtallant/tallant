@@ -40,13 +40,12 @@ def k_nearest_nick(x_train, y_train, x_test, y_test):
         # Euclidean is totally fine! 
          
         for weight_func in ['uniform', 'distance']:
-            row.append(weight_func)    
             knn = KNeighborsClassifier(n_neighbors=k,
                                        weights=weight_func)
             knn.fit(x_train, y_train)
             
             # maybe score on original data using score method also 
-            rough = rough_binary_eval(x_test, y_test, model) 
+            rough = rough_binary_eval(x_test, y_test, knn) 
             list_of_models.append([f'{k} neighbors',
                                    weight_func,
                                    rough])
