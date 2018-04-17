@@ -37,7 +37,7 @@ def k_nearest_nick(x_train, y_train, x_test, y_test):
     list_of_models = [] 
     for k in range(1,11):
         # Maybe add a third loop for Distance metrics later,
-        # Euclidean is totally fine! 
+        # Euclidean is totally fine for now! 
          
         for weight_func in ['uniform', 'distance']:
             knn = KNeighborsClassifier(n_neighbors=k,
@@ -52,3 +52,10 @@ def k_nearest_nick(x_train, y_train, x_test, y_test):
             
     return pd.DataFrame(list_of_models, 
                        columns=['Neighbors', 'Weight', 'Performance'])
+
+def see_tree_importance(x_train, tree):
+    '''Returns a DF of features selected and the models importance'''
+    #Find a better way to word that^
+    return pd.concat([pd.Series(x_train.columns, name='Feature'),
+           pd.Series(tree.feature_importances_, name='Importance')],
+               axis=1)

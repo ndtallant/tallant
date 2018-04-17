@@ -9,6 +9,7 @@ This file contains functions to.
 3. Pre-Process and Clean Data
 '''
 import re
+import random
 import pandas as pd
 import numpy as np
 from warnings import warn
@@ -47,7 +48,22 @@ def explore_categorical(df, features):
     for feature in features:
         print(df[feature].value_counts())
 
+def replace_na_random(df, feature, lower, upper):
+    '''
+    Replaces any Null values in a feature with a random int
+    between the lower and upper bounds
+    '''
+    for index, row in df.iterrows():
+        if pd.isna(row[feature]):
+            df.loc[index, feature] = random.randint(lower, upper)
 
+def nan_scan(df):
+    for feature in df.columns:
+        if df[feature].isnull().values.any():
+            message = 'Has Nans' 
+        else:
+            message = 'All Good'
+        print(message, "-->", feature)
 
 # Helpers -----------------------------------------------------------
 
