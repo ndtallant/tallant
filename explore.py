@@ -65,6 +65,12 @@ def nan_scan(df):
             message = 'All Good'
         print(message, "-->", feature)
 
+def bound_feature(df, feature):
+    foi = df[feature]
+    ok_vals = df[abs(df[feature]) < 1][feature]
+    foi = foi.where(abs(foi) < 1, ok_vals.mean())
+    df[feature] = foi 
+
 # Helpers -----------------------------------------------------------
 
 
@@ -128,7 +134,7 @@ def time_plots(df):
     Input: df (pandas DataFrame w/ date column)
     Output: plots of observations by month and weekday.
     '''
-    pass
+    raise NotImplementedError 
 
     # clip month?
     # make column datetime objects
