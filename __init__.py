@@ -7,6 +7,7 @@ collection of personal modules, functions, etc.
 Modules:
     explore.py
     learner.py
+         db.py
 
-Updated April '18
+Updated May '18
 '''
