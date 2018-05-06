@@ -48,6 +48,7 @@ def explore_categorical(df, features):
     for feature in features:
         print(df[feature].value_counts())
 
+# Look into Imputer classes from sk-learn
 def replace_na_random(df, feature, lower, upper):
     '''
     Replaces any Null values in a feature with a random int
@@ -74,23 +75,72 @@ def bound_feature(df, feature):
 class FatherTime:
     '''
     Class used to explore and create temporal features.
+    
+    
+    https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
     '''
     def __init__(self, feature):
-        pass
+        '''
+        Just takes in a string of the feature of interest.
+        Does not wrap an entire dataframe for memory reasons.
+        '''
+        self.feature = feature 
 
+    def make_datetime(self, feature, new_name):
+        '''
+        Creates a datetime series from a feature, and makes
+        the self.feature attr the new datetime series for further 
+        exploration and feature generation.
+        '''
+        # Think about exception handling 
+        df[feature] = pd.to_datetime(df[feature]) 
+        
     def get_months(self, feature):
         '''
         Returns the name of the month from timeseries data.
         Can return just the series or will add the feature to the df.
-        '''
-        raise NotImplementedError
+        
+        Uses datetime objects (use make_datetime method). 
+        ''' 
+        month_map = { 1: 'January',
+                      2: 'February',
+                      3: 'March',
+                      4: 'April',
+                      5: 'May',
+                      6: 'June',
+                      7: 'July',
+                      8: 'August',
+                      9: 'September',
+                     10: 'October',
+                     11: 'November',
+                     12: 'December'}
 
-    def get_weekday(self, feature):
+        if humanize: 
+            df['month'] = df[feature].apply(lambda x: month_map[x.month])
+        else:
+            df['month'] = df[feature].apply(lambda x: x.month)
+        # test!!!
+    
+    def get_weekday(self, df, feature, humanize=True):
         '''
         Returns the name of the weekday from timeseries data.
         Can return just the series or will add the feature to the df.
+        
+        Uses datetime objects (use make_datetime method). 
         '''
-        raise NotImplementedError
+        day_map = {0: 'Monday',
+                   1: 'Tuesday',
+                   2: 'Wednesday',
+                   3: 'Thursday',
+                   4: 'Friday',
+                   5: 'Saturday',
+                   6: 'Sunday'}
+
+        if humanize: 
+            df['weekday'] = df[feature].apply(lambda x: day_map[x.weekday()])
+        else:
+            df['weekday'] = df[feature].apply(lambda x: x.weekday())
+        # test!!!
 
     def get_military_hour(self, feature):
         '''
@@ -120,6 +170,7 @@ class FatherTime:
         explore distance.
         Can return just the series or will add the feature to the df.
         '''
+        #int(my_Date.strftime('%j')) 
         raise NotImplementedError
     
     def time_plots(self):
@@ -131,13 +182,7 @@ class FatherTime:
         '''
         raise NotImplementedError 
 
-        # clip month?
-        # make column datetime objects
-        # make month feature
-        # make weekday feature
-        # plot!
 # Helpers -----------------------------------------------------------
-
 
 def snakify_cols(df, verbose=True):
     '''
