@@ -71,6 +71,71 @@ def bound_feature(df, feature):
     foi = foi.where(abs(foi) < 1, ok_vals.mean())
     df[feature] = foi 
 
+class FatherTime:
+    '''
+    Class used to explore and create temporal features.
+    '''
+    def __init__(self, feature):
+        pass
+
+    def get_months(self, feature):
+        '''
+        Returns the name of the month from timeseries data.
+        Can return just the series or will add the feature to the df.
+        '''
+        raise NotImplementedError
+
+    def get_weekday(self, feature):
+        '''
+        Returns the name of the weekday from timeseries data.
+        Can return just the series or will add the feature to the df.
+        '''
+        raise NotImplementedError
+
+    def get_military_hour(self, feature):
+        '''
+        Returns the hour from 0 to 23 from timeseries data.
+        Can return just the series or will add the feature to the df.
+        '''
+        raise NotImplementedError
+
+    def get_radial_hour(self, feature):
+        '''
+        Returns the time of day as the position on a clock from timeseries data.
+        This allows 11 p.m. to be as close to 1 a.m. as 9 p.m. for distance. 
+        Can return just the series or will add the feature to the df.
+        '''
+        raise NotImplementedError
+   
+    def get_season(self, feature):
+        '''
+        Returns the season from timeseries data.
+        Can return just the series or will add the feature to the df.
+        '''
+        raise NotImplementedError
+
+    def get_radial_season(self, feature):
+        '''
+        Returns the day of the year as a position on a circle to 
+        explore distance.
+        Can return just the series or will add the feature to the df.
+        '''
+        raise NotImplementedError
+    
+    def time_plots(self):
+        '''
+        Plots the frequency of a observations by month and weekday.
+        
+        Input: df (pandas DataFrame w/ date column)
+        Output: plots of observations by month and weekday.
+        '''
+        raise NotImplementedError 
+
+        # clip month?
+        # make column datetime objects
+        # make month feature
+        # make weekday feature
+        # plot!
 # Helpers -----------------------------------------------------------
 
 
@@ -127,17 +192,9 @@ def see_feature_types(df, via_plotly=True):
     data = [trace]
     py.iplot(data, filename='feature_table')
 
-def time_plots(df):
-    '''
-    Plots the frequency of a observations by month and weekday.
-    
-    Input: df (pandas DataFrame w/ date column)
-    Output: plots of observations by month and weekday.
-    '''
-    raise NotImplementedError 
 
-    # clip month?
-    # make column datetime objects
-    # make month feature
-    # make weekday feature
-    # plot!
+# Dev to-do
+#dealing with outliers, 
+#discretizing continuous/categorical data
+#plot histograms/kde plots of distributions, 
+#scatter plots to show relationship between two vars, etc)
