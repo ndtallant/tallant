@@ -76,7 +76,6 @@ class FatherTime:
     '''
     Class used to explore and create temporal features.
     
-    
     https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
     '''
     def __init__(self, feature):
@@ -86,7 +85,7 @@ class FatherTime:
         '''
         self.feature = feature 
 
-    def make_datetime(self, feature, new_name):
+    def make_datetime(self, df, feature):
         '''
         Creates a datetime series from a feature, and makes
         the self.feature attr the new datetime series for further 
@@ -95,7 +94,7 @@ class FatherTime:
         # Think about exception handling 
         df[feature] = pd.to_datetime(df[feature]) 
         
-    def get_months(self, feature):
+    def get_months(self, df, feature):
         '''
         Returns the name of the month from timeseries data.
         Can return just the series or will add the feature to the df.
@@ -119,7 +118,6 @@ class FatherTime:
             df['month'] = df[feature].apply(lambda x: month_map[x.month])
         else:
             df['month'] = df[feature].apply(lambda x: x.month)
-        # test!!!
     
     def get_weekday(self, df, feature, humanize=True):
         '''
@@ -140,16 +138,22 @@ class FatherTime:
             df['weekday'] = df[feature].apply(lambda x: day_map[x.weekday()])
         else:
             df['weekday'] = df[feature].apply(lambda x: x.weekday())
-        # test!!!
 
-    def get_military_hour(self, feature):
+    def get_day_of_year(self, df, feature):
+        '''
+        Returns the day of year as an int from timeseries data.
+        Can return just the series or will add the feature to the df.
+        '''
+        df['day_of_year'] = df[feature].apply(lambda x: int(x.strftime('%j')))
+
+    def get_military_hour(self, df, feature):
         '''
         Returns the hour from 0 to 23 from timeseries data.
         Can return just the series or will add the feature to the df.
         '''
-        raise NotImplementedError
+        df['hour'] = df[feature].apply(lambda x: int(x.strftime('%H')))
 
-    def get_radial_hour(self, feature):
+    def get_radial_hour(self, df, feature):
         '''
         Returns the time of day as the position on a clock from timeseries data.
         This allows 11 p.m. to be as close to 1 a.m. as 9 p.m. for distance. 
@@ -157,20 +161,22 @@ class FatherTime:
         '''
         raise NotImplementedError
    
-    def get_season(self, feature):
+    def get_season(self, df, feature):
         '''
         Returns the season from timeseries data.
         Can return just the series or will add the feature to the df.
         '''
+        #Going to need to define custom bins 
+        #pd.cut(df['day_of_year'], ['Spring', 'Summer', 'Fall', 'Winter']) 
         raise NotImplementedError
 
-    def get_radial_season(self, feature):
+    def get_radial_season(self, df, feature):
         '''
         Returns the day of the year as a position on a circle to 
         explore distance.
         Can return just the series or will add the feature to the df.
         '''
-        #int(my_Date.strftime('%j')) 
+        #try:
         raise NotImplementedError
     
     def time_plots(self):
@@ -181,6 +187,12 @@ class FatherTime:
         Output: plots of observations by month and weekday.
         '''
         raise NotImplementedError 
+
+class Atlas:
+    '''
+    Class used to explore and create geospatial features.
+    '''
+    raise NotImplementedError
 
 # Helpers -----------------------------------------------------------
 
