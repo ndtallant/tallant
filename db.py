@@ -14,7 +14,7 @@ class Elephant:
     '''
     psql client
     '''
-    d    def __init__(self, dbname, dbhost, dbport, dbusername, dbpasswd, override=False):
+    def __init__(self, dbname, dbhost, dbport, dbusername, dbpasswd, override=False):
         self.dbname = dbname
         self.dbhost = dbhost
         self.dbport = dbport
