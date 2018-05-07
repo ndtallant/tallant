@@ -159,8 +159,15 @@ class FatherTime:
         This allows 11 p.m. to be as close to 1 a.m. as 9 p.m. for distance. 
         Can return just the series or will add the feature to the df.
         '''
-        raise NotImplementedError
-   
+        df['sin_hour'] = np.sin(np.pi*df[feature]/12)
+        df['cos_hour'] = np.cos(np.pi*df[feature]/12)
+  
+    def plot_clock(self, df, feature): 
+        '''
+        Plots the hours of a dataframe in 2d space like a clock.
+        '''
+        df.plot.scatter('sin_hour','cos_hour').set_aspect('equal')
+
     def get_season(self, df, feature):
         '''
         Returns the season from timeseries data.
@@ -176,10 +183,16 @@ class FatherTime:
         explore distance.
         Can return just the series or will add the feature to the df.
         '''
-        #try:
-        raise NotImplementedError
+        df['sin_day'] = np.sin(2*np.pi*df['day_of_year']/365)
+        df['cos_day'] = np.cos(2*np.pi*df['day_of_year']/365)
     
-    def time_plots(self):
+    def season_circle(self, df, feature): 
+        '''
+        Plots the days of a dataframe in 2d space as a circle.
+        '''
+        df.plot.scatter('sin_day','cos_day').set_aspect('equal')
+   
+   def time_plots(self):
         '''
         Plots the frequency of a observations by month and weekday.
         
