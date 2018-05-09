@@ -13,8 +13,8 @@ import random
 import pandas as pd
 import numpy as np
 from warnings import warn
-import plotly.plotly as py
-import plotly.graph_objs as go
+#import plotly.plotly as py
+#import plotly.graph_objs as go
 
 def load_data(file_name, file_type='csv', verbose=True, meta_data=None):
     '''
@@ -192,10 +192,10 @@ class FatherTime:
         '''
         df.plot.scatter('sin_day','cos_day').set_aspect('equal')
    
-   def time_plots(self):
+    def time_plots(self):
         '''
         Plots the frequency of a observations by month and weekday.
-        
+       
         Input: df (pandas DataFrame w/ date column)
         Output: plots of observations by month and weekday.
         '''
@@ -205,7 +205,7 @@ class Atlas:
     '''
     Class used to explore and create geospatial features.
     '''
-    raise NotImplementedError
+    pass 
 
 # Helpers -----------------------------------------------------------
 
@@ -241,7 +241,8 @@ def snakify(feature, verbose=True):
     snake_feature = re.sub('([a-z0-9])([A-Z])', r'\1_\2', s2).lower()
     
     if len(snake_feature) > 20 and verbose:
-        warn(f'Rename {snake_feature}')
+        #warn(f'Rename {snake_feature}') 3.6 is the best
+        warn('Rename {}'.format(snake_feature))
     # find a way to get rid of source line for this warning. 
     return snake_feature
 

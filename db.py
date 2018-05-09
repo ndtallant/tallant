@@ -7,17 +7,17 @@ This file contains clients for different database engines, currently:
     postgres
     sqlite3 in near future
 '''
-
 import psycopg2
+import pandas as pd
 
 class Elephant:
     '''
     psql client
     '''
-    def __init__(self, dbname, dbhost, dbport, dbusername, dbpasswd, override=False):
+    def __init__(self, dbname='', dbhost='', dbusername='', dbpasswd='', override=False):
         self.dbname = dbname
         self.dbhost = dbhost
-        self.dbport = dbport
+        #self.dbport = dbport
         self.dbusername = dbusername
         self.dbpasswd = dbpasswd
         
@@ -29,26 +29,32 @@ class Elephant:
             self.dbusername=DBVars.dbusername
             self.dbpasswd=DBVars.dbpasswd
 
-        self.conn = self.openConnection() 
+        self.conn = self.open_connection() 
         print("Don't forget to close!")
     
-    def openConnection(self):
+    def open_connection(self):
         '''Opens a connection to a psql database, using self.db params'''
         #logger.debug("Opening a Connection")
         conn = psycopg2.connect(dbname=self.dbname, 
                                 user=self.dbusername, 
                                 password=self.dbpasswd, 
-                                host=self.dbhost,
-                                port=self.dbport)
+                                host=self.dbhost)
         return conn 
 
-    def closeConnection(self):
+    def close_connection(self):
         '''Closes any active connection'''
         #logger.debug("Closing Connection")
         self.conn.close() 
         return True
 
-    def createTables(self):
+    def basic_query(self, query):
+        cur = self.conn.cursor()
+        cur.execute(query)
+        data = cur.fetchall()
+        cur.close()
+        return pd.DataFrame.from_records(data)
+
+    def create_tables(self):
         '''
         Creates a trip and station table in the database. 
         Commits those changes to the database.
