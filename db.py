@@ -5,9 +5,13 @@ Author: Nick Tallant
 
 This file contains clients for different database engines, currently:
     postgres
-    sqlite3 in near future
+    sqlite3
+
+It may be cleaner to have one client class, and have the db-engine specified.
+But will have to take a look at the different APIs.
 '''
 import psycopg2
+import sqlite3
 import pandas as pd
 
 class Elephant:
@@ -71,4 +75,32 @@ class Elephant:
         except NameError: 
             print('There is no connection for this client')
         
-        return True 
+        return True
+
+
+class Feather:
+    '''
+    SQLite client
+    '''
+    def __init__(self, dbname=''):
+        self.dbname = dbname
+        self.conn = self.open_connection() 
+        print("Don't forget to close!")
+    
+    def open_connection(self):
+        '''Opens a connection to a psql database, using self.db params'''
+        #logger.debug("Opening a Connection")
+        conn = sqlite3.connect(self.dbname) 
+        return conn 
+
+    def close_connection(self):
+        '''Closes any active connection'''
+        self.conn.close() 
+        return True
+
+    def basic_query(self, query):
+        cur = self.conn.cursor()
+        cur.execute(query)
+        data = cur.fetchall()
+        cur.close()
+        return pd.DataFrame.from_records(data)
