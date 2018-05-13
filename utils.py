@@ -34,3 +34,8 @@ def snakify(feature, verbose=False):
     # find a way to get rid of source line for this warning. 
     return snake_feature
 
+def make_dict_from_lists(l1, l2):
+    try:
+        return {l1[i]: l2[i] for i in range(len(l1))}
+    except:
+        print('no way jose')
