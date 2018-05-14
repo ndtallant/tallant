@@ -86,7 +86,8 @@ class Feather:
         self.dbname = dbname
         self.conn = self.open_connection() 
         print("Don't forget to close!")
-    
+   
+
     def open_connection(self):
         '''Opens a connection to a psql database, using self.db params'''
         #logger.debug("Opening a Connection")
@@ -105,3 +106,11 @@ class Feather:
         cols = [desc[0] for desc in cur.description]
         cur.close()
         return pd.DataFrame.from_records(data, columns=cols)
+
+    def __enter__(self):
+        return self 
+    
+    def __exit__(self, *args):
+        '''Guarantees a closed connection, *args are three exception types.'''        
+        print('All done!')
+        self.close_connection()
