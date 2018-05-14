@@ -55,9 +55,10 @@ class Elephant:
         cur = self.conn.cursor()
         cur.execute(query)
         data = cur.fetchall()
+        cols = [desc[0] for desc in cur.description]
         cur.close()
-        return pd.DataFrame.from_records(data)
-
+        return pd.DataFrame.from_records(data, columns=cols)
+    
     def create_tables(self):
         '''
         Creates a trip and station table in the database. 
