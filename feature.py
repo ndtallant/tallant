@@ -8,6 +8,8 @@ This file contains classes for feature generation.
 - Atlas:  Geospatial feature generation
 
 '''
+import pandas as pd
+import datetime
 
 class Kronos:
     '''
