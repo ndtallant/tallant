@@ -16,23 +16,24 @@ class Kronos:
 
     https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
     '''
-    def __init__(self, feature):
+    def __init__(self, df, feature):
         '''
         Just takes in a string of the feature of interest.
         Does not wrap an entire dataframe for memory reasons.
         '''
+        self.df = df 
         self.feature = feature 
 
-    def make_datetime(self, df, feature):
+    def make_datetime(self):
         '''
         Creates a datetime series from a feature, and makes
         the self.feature attr the new datetime series for further 
         exploration and feature generation.
         '''
         # Think about exception handling 
-        df[feature] = pd.to_datetime(df[feature]) 
+        self.df[self.feature] = pd.to_datetime(self.df[self.feature]) 
         
-    def get_months(self, df, feature):
+    def get_months(self, humanize=True):
         '''
         Returns the name of the month from timeseries data.
         Can return just the series or will add the feature to the df.
@@ -53,11 +54,11 @@ class Kronos:
                      12: 'December'}
 
         if humanize: 
-            df['month'] = df[feature].apply(lambda x: month_map[x.month])
+            self.df['month'] = self.df[self.feature].apply(lambda x: month_map[x.month])
         else:
-            df['month'] = df[feature].apply(lambda x: x.month)
+            self.df['month'] = self.df[self.feature].apply(lambda x: x.month)
     
-    def get_weekday(self, df, feature, humanize=True):
+    def get_weekday(self, humanize=True):
         '''
         Returns the name of the weekday from timeseries data.
         Can return just the series or will add the feature to the df.
@@ -73,38 +74,38 @@ class Kronos:
                    6: 'Sunday'}
 
         if humanize: 
-            df['weekday'] = df[feature].apply(lambda x: day_map[x.weekday()])
+            self.df['weekday'] = self.df[self.feature].apply(lambda x: day_map[x.weekday()])
         else:
-            df['weekday'] = df[feature].apply(lambda x: x.weekday())
+            self.df['weekday'] = self.df[self.feature].apply(lambda x: x.weekday())
 
-    def get_day_of_year(self, df, feature):
+    def get_day_of_year(self):
         '''
         Returns the day of year as an int from timeseries data.
         Can return just the series or will add the feature to the df.
         '''
-        df['day_of_year'] = df[feature].apply(lambda x: int(x.strftime('%j')))
+        self.df['day_of_year'] = self.df[self.feature].apply(lambda x: int(x.strftime('%j')))
 
-    def get_military_hour(self, df, feature):
+    def get_military_hour(self):
         '''
         Returns the hour from 0 to 23 from timeseries data.
         Can return just the series or will add the feature to the df.
         '''
-        df['hour'] = df[feature].apply(lambda x: int(x.strftime('%H')))
+        self.df['hour'] = self.df[self.feature].apply(lambda x: int(x.strftime('%H')))
 
-    def get_radial_hour(self, df, feature):
+    def get_radial_hour(self):
         '''
         Returns the time of day as the position on a clock from timeseries data.
         This allows 11 p.m. to be as close to 1 a.m. as 9 p.m. for distance. 
         Can return just the series or will add the feature to the df.
         '''
-        df['sin_hour'] = np.sin(np.pi*df[feature]/12)
-        df['cos_hour'] = np.cos(np.pi*df[feature]/12)
+        self.df['sin_hour'] = np.sin(np.pi*self.df[self.feature]/12)
+        self.df['cos_hour'] = np.cos(np.pi*self.df[self.feature]/12)
   
-    def plot_clock(self, df, feature): 
+    def plot_clock(self): 
         '''
         Plots the hours of a dataframe in 2d space like a clock.
         '''
-        df.plot.scatter('sin_hour','cos_hour').set_aspect('equal')
+        self.df.plot.scatter('sin_hour','cos_hour').set_aspect('equal')
 
     def get_season(self, df, feature):
         '''
@@ -121,14 +122,14 @@ class Kronos:
         explore distance.
         Can return just the series or will add the feature to the df.
         '''
-        df['sin_day'] = np.sin(2*np.pi*df['day_of_year']/365)
-        df['cos_day'] = np.cos(2*np.pi*df['day_of_year']/365)
+        self.df['sin_day'] = np.sin(2*np.pi*self.df['day_of_year']/365)
+        self.df['cos_day'] = np.cos(2*np.pi*self.df['day_of_year']/365)
     
-    def season_circle(self, df, feature): 
+    def season_circle(self): 
         '''
         Plots the days of a dataframe in 2d space as a circle.
         '''
-        df.plot.scatter('sin_day','cos_day').set_aspect('equal')
+        self.df.plot.scatter('sin_day','cos_day').set_aspect('equal')
    
     def time_plots(self):
         '''
