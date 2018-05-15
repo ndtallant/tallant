@@ -63,10 +63,12 @@ def replace_na_random(feature, lower, upper):
     '''
     pass
 
-def nan_scan(feature):
-    if df[feature].isnull().values.any():
-        return 'Has Nans' 
-    return 'All Good'
+def nan_scan(df):
+    for feature in df.columns:
+        if df[feature].isnull().values.any():
+            print(feature, '---> Has Nans') 
+        else:
+            print(feature, '---> All Good')
 
 def bound_feature(feature):
     '''why did you make this?''' 
