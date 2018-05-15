@@ -45,16 +45,17 @@ def k_nearest_nick(x_train, y_train, x_test, y_test):
         for weight_func in ['uniform', 'distance']:
             knn = KNeighborsClassifier(n_neighbors=k,
                                        weights=weight_func)
-            knn.fit(x_train, y_train)
+            cur_model = knn.fit(x_train, y_train)
             
-            # maybe score on original data using score method also 
-            rough = rough_binary_eval(x_test, y_test, knn) 
+            test_pred = cur_model.predict(x_test)
+            
+            metrics = get_metrics(y_test, test_pred) 
             list_of_models.append(['{} neighbors'.format(k),
-                                   weight_func,
-                                   rough])
+                                   weight_func] + list(metrics))
             
     return pd.DataFrame(list_of_models, 
-                       columns=['Neighbors', 'Weight', 'Performance'])
+                       columns=['Neighbors', 'Weight', 'Accuracy',
+                                'Precision', 'Recall', 'ROC AUC'])
 
 def compare_trees(x_train, y_train, x_test, y_test):
     depths = [1, 3, 5, 7]
@@ -65,13 +66,10 @@ def compare_trees(x_train, y_train, x_test, y_test):
         test_pred = dec_tree.predict(x_test)
         # evaluate accuracy
         train_acc = accuracy(train_pred, y_train)
-        test_acc = accuracy(test_pred, y_test)
-        pre = precision_score(y_true=y_test, y_pred=y_pred) 
-        recall = precision_score(y_true=y_test, y_pred=y_pred) 
-        roc_auc = precision_score(y_true=y_test, y_scores=y_pred) 
+        acc, pre, recall, roc_auc = get_metrics(y_test, test_pred) 
         
         print("Depth: {} | Train Acc: {:.2f} | ".format(d, train_acc) + 
-              "Test Acc: {:.2f} | Prec: {:.2f} | ".format(test_acc, pre) +
+              "Test Acc: {:.2f} | Prec: {:.2f} | ".format(acc, pre) +
               "Recall: {:.2f} | ROC AUC {:.2f}".format(recall, roc_auc))
 
 def see_tree_importance(x_train, tree):
@@ -80,3 +78,10 @@ def see_tree_importance(x_train, tree):
     return pd.concat([pd.Series(x_train.columns, name='Feature'),
            pd.Series(tree.feature_importances_, name='Importance')],
                axis=1)
+
+def get_metrics(true, predicted):
+    acc = accuracy(predicted, true)
+    pre = precision_score(true, predicted) 
+    recall = recall_score(true, predicted) 
+    roc_auc = roc_auc_score(true, predicted)
+    return acc, pre, recall, roc_auc
