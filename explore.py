@@ -35,7 +35,7 @@ def load_data(data, verbose=True):
     return df
 
 def snakify_cols(df, verbose=True):
-    '''
+   '''
    Takes in a dataframe and alters the columns/features
    to snake_case inplace.
    '''
