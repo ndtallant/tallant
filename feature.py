@@ -9,6 +9,7 @@ This file contains classes for feature generation.
 
 '''
 import pandas as pd
+import numpy as np
 import datetime
 
 class Kronos:
@@ -18,13 +19,23 @@ class Kronos:
 
     https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
     '''
-    def __init__(self, df, feature):
+    def __init__(self, df, feature, create_date=False):
         '''
         Just takes in a string of the feature of interest.
         Does not wrap an entire dataframe for memory reasons.
         '''
         self.df = df 
-        self.feature = feature 
+        self.feature = feature
+        if create_date:
+            self.create_date_features()
+
+    def create_date_features(self):
+        self.make_datetime()
+        self.get_months()
+        self.get_weekday()
+        self.get_day_of_year()
+        self.get_radial_season()
+        #self.get_season
 
     def make_datetime(self):
         '''
@@ -127,7 +138,7 @@ class Kronos:
         self.df['sin_day'] = np.sin(2*np.pi*self.df['day_of_year']/365)
         self.df['cos_day'] = np.cos(2*np.pi*self.df['day_of_year']/365)
     
-    def season_circle(self): 
+    def season_circle(self, target=None): 
         '''
         Plots the days of a dataframe in 2d space as a circle.
         '''

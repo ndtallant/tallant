@@ -48,7 +48,7 @@ def k_nearest_nick(x_train, y_train, x_test, y_test):
             
             # maybe score on original data using score method also 
             rough = rough_binary_eval(x_test, y_test, knn) 
-            list_of_models.append([f'{k} neighbors',
+            list_of_models.append(['{} neighbors'.format(k),
                                    weight_func,
                                    rough])
             
