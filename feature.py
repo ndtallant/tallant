@@ -29,10 +29,10 @@ class Kronos:
         if create_date:
             self.create_date_features()
 
-    def create_date_features(self):
+    def create_date_features(self, humanize=False):
         self.make_datetime()
-        self.get_months()
-        self.get_weekday()
+        self.get_months(humanize=humanize)
+        self.get_weekday(humanize=humanize)
         self.get_day_of_year()
         self.get_radial_season()
         #self.get_season
