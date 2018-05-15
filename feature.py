@@ -107,7 +107,7 @@ class Kronos:
         '''
         self.df.plot.scatter('sin_hour','cos_hour').set_aspect('equal')
 
-    def get_season(self, df, feature):
+    def get_season(self):
         '''
         Returns the season from timeseries data.
         Can return just the series or will add the feature to the df.
@@ -116,7 +116,7 @@ class Kronos:
         #pd.cut(df['day_of_year'], ['Spring', 'Summer', 'Fall', 'Winter']) 
         raise NotImplementedError
 
-    def get_radial_season(self, df, feature):
+    def get_radial_season(self):
         '''
         Returns the day of the year as a position on a circle to 
         explore distance.

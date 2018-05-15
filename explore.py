@@ -1,5 +1,5 @@
 '''
-Nickallant
+Nick Tallant
 tallant.explore
 
 Thisile contains functions to.
@@ -15,7 +15,7 @@ import pandas as pd
 import numpy as np
 from warnings import warn
 
-from utils import snakify
+from utils import snakify 
 
 from sklearn.preprocessing import Imputer
 from sklearn.preprocessing import OneHotEncoder
@@ -36,11 +36,11 @@ def load_data(data, verbose=True):
 
 def snakify_cols(df, verbose=True):
     '''
-    Takes in a dataframe and alters the columns/features
-    to snake_case inplace.
-    '''
-    cols = {col:snakify(col, verbose=verbose) for col in df.columns}
-    df.rename(columns=cols, inplace=True)
+   Takes in a dataframe and alters the columns/features
+   to snake_case inplace.
+   '''
+   cols = {col:snakify(col, verbose=verbose) for col in df.columns}
+   df.rename(columns=cols, inplace=True)
 
 def get_var_category(df, feature):
     '''Returns either Numerical, Date, Text, or Categorical'''
