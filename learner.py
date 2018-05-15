@@ -16,6 +16,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score as accuracy
+from sklearn.metrics import precision_score, recall_score, roc_auc_score
 from sklearn.cross_validation import train_test_split
 
 def rough_binary_eval(x_test, y_test, model):
@@ -65,9 +66,13 @@ def compare_trees(x_train, y_train, x_test, y_test):
         # evaluate accuracy
         train_acc = accuracy(train_pred, y_train)
         test_acc = accuracy(test_pred, y_test)
+        pre = precision_score(y_true=y_test, y_pred=y_pred) 
+        recall = precision_score(y_true=y_test, y_pred=y_pred) 
+        roc_auc = precision_score(y_true=y_test, y_scores=y_pred) 
         
-        print("Depth: {} | Train acc: {:.2f} \
-                | Test acc: {:.2f}".format(d, train_acc, test_acc))
+        print("Depth: {} | Train Acc: {:.2f} | ".format(d, train_acc) + 
+              "Test Acc: {:.2f} | Prec: {:.2f} | ".format(test_acc, pre) +
+              "Recall: {:.2f} | ROC AUC {:.2f}".format(recall, roc_auc))
 
 def see_tree_importance(x_train, tree):
     '''Returns a DF of features selected and the models importance'''
