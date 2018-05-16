@@ -11,17 +11,21 @@ This file contains functions to.
 import re
 import os
 import random
-import pandas as pd
 import numpy as np
+import pandas as pd
 from warnings import warn
+
 #from utils import snakify
 
 from sklearn.preprocessing import Imputer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import label_binarize
 
-#importlotly.plotly as py
-#importlotly.graph_objs as go
+import seaborn as sns
+import plotly.plotly as py
+import plotly.graph_objs as go
+import matplotlib.pyplot as plt
+
 
 def load_data(data, verbose=True):
     '''Loads in data to a dataframe.'''
@@ -60,13 +64,16 @@ def get_var_cat(df, feature):
     '''Returns either Numerical, Date, Text, or Categorical'''
     unique_count = df[feature].nunique(dropna=False)
     total_count = len(df[feature])
+    
+    if len(df[feature].unique()) == 2:
+        return 'Binary'
     if df[feature].dtype == 'O':
         return 'Categorical'
     if pd.api.types.is_numeric_dtype(df[feature]):
         return 'Numerical'
-    elif pd.api.types.is_datetime64_dtype(df[feature]):
+    if pd.api.types.is_datetime64_dtype(df[feature]):
         return 'Date'
-    elif unique_count == total_count:
+    if unique_count == total_count:
         return 'Text (Unique)'
 
 def nan_scan(df, feature):
@@ -75,9 +82,9 @@ def nan_scan(df, feature):
         return 'Yes' 
     return ' No'
 
-def make_numeric(df, features):
-    '''Makes a list of features numeric'''
-    for feature in features:
+def make_numeric(df, feature_list):
+    '''Makes a given list of features numeric'''
+    for feature in feature_list:
         df[feature] = pd.to_numeric(df[feature])
 
 def dumb_cats(df):
@@ -92,10 +99,12 @@ def dumb_cats(df):
     return dumb_df 
 
 def binarize(df, true='t', false='f'):
+    '''Binarizes every column in a df, can set the true and false labels''' 
     for feat in df.columns:
         if set(df[feat].unique()) == set([false, true]):
             df[feat] = label_binarize(df[feat], classes=[false, true])
-
+            df[feat] = df[feat].astype('category')
+            
 def replace_na_random(feature, lower, upper):
     '''
     Replaces any Null values in a feature with a random int
@@ -110,6 +119,29 @@ def bound_feature(feature):
     ok_vals = df[abs(df[feature]) < 1][feature]
     foi = foi.where(abs(foi) < 1, ok_vals.mean())
     df[feature] = foi
+
+def plot_numerics(df):
+    '''Plots every numeric feature in a df (box and hist)''' 
+    for feature in df.columns:
+        if df[feature].dtype != 'O' and len(df[feature].unique()) > 2:
+            plot_numeric(df, feature)
+            
+def plot_numeric(df, feature):
+    '''
+    Given a numeric feature, this function plots a 
+    box plot and a distribution.
+    '''
+    plt.figure(figsize=(15,6))
+    plt.subplot(1, 2, 1)
+    fig = sns.boxplot(y=df[feature])
+    fig.set_title('')
+    fig.set_ylabel(feature)
+    
+    plt.subplot(1, 2, 2)
+    fig = sns.distplot(df[feature].dropna())
+    fig.set_ylabel('')
+    fig.set_xlabel(feature)
+    plt.show()
 
 def snakify(feature, verbose=False):
     '''
