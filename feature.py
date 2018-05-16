@@ -35,8 +35,12 @@ class Kronos:
         self.get_weekday(humanize=humanize)
         self.get_day_of_year()
         self.get_radial_season()
+        self.get_year() 
         #self.get_season
 
+    def get_year(self):
+        self.df['year'] = self.df[self.feature].apply(lambda x: x.year)
+    
     def make_datetime(self):
         '''
         Creates a datetime series from a feature, and makes
