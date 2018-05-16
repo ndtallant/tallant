@@ -2,7 +2,7 @@
 Nick Tallant
 tallant.explore
 
-Thisile contains functions to.
+This file contains functions to.
 
 1.Read/Load Data
 2.Explore Data
@@ -14,7 +14,6 @@ import random
 import pandas as pd
 import numpy as np
 from warnings import warn
-
 #from utils import snakify
 
 from sklearn.preprocessing import Imputer
@@ -42,33 +41,62 @@ def snakify_cols(df, verbose=True):
    cols = {col:snakify(col, verbose=verbose) for col in df.columns}
    df.rename(columns=cols, inplace=True)
 
-def get_var_category(df, feature):
+def quick_summary(df):
+    '''Shows each column, if it has nans, its type, and an example value''' 
+    cols = ['Feature', 'Missing', 'Type', 'Example']
+    return pd.concat([pd.DataFrame([qsum_helper(df, feature)], columns=cols) 
+                      for feature in df.columns], 
+                      ignore_index=True).set_index('Feature')
+        
+def qsum_helper(df, feature):
+    '''Returns single row to quick_summary''' 
+    return [feature, 
+            nan_scan(df, feature), 
+            get_var_cat(df, feature), 
+            df[feature].loc[0]]
+
+def get_var_cat(df, feature):
     '''Returns either Numerical, Date, Text, or Categorical'''
     unique_count = df[feature].nunique(dropna=False)
     total_count = len(df[feature])
+    if df[feature].dtype == 'O':
+        return 'Categorical'
     if pd.api.types.is_numeric_dtype(df[feature]):
         return 'Numerical'
     elif pd.api.types.is_datetime64_dtype(df[feature]):
         return 'Date'
     elif unique_count == total_count:
         return 'Text (Unique)'
-    else:
-        return 'Categorical'
 
-# Look into Imputer classes from sk-learn
+def nan_scan(df, feature):
+    '''Scans for NaNs''' 
+    if df[feature].isnull().values.any():
+        return 'Yes' 
+    return ' No'
+
+def make_numeric(df, features):
+    '''Makes a list of features numeric'''
+    for feature in features:
+        df[feature] = pd.to_numeric(df[feature])
+
+def dumb_cats(df):
+    '''Dummifies all categorical features (dtype object)''' 
+    dumb_df = pd.DataFrame(index=df.index)
+    for feature in df.columns:
+        if df[feature].dtype == 'O':
+            dummied = pd.get_dummies(data[feature], prefix=feature, dummy_na=True)
+            dumb_df = dumb_df.join(dummied)
+        else:
+            dumb_df = dumb_df.join(df[feature])
+    return dumb_df 
+
 def replace_na_random(feature, lower, upper):
     '''
     Replaces any Null values in a feature with a random int
     between the lower and upper bounds
     '''
+    # Look into Imputer classes from sk-learn
     pass
-
-def nan_scan(df):
-    for feature in df.columns:
-        if df[feature].isnull().values.any():
-            print(feature, '---> Has Nans') 
-        else:
-            print(feature, '---> All Good')
 
 def bound_feature(feature):
     '''why did you make this?''' 

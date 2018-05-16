@@ -3,30 +3,31 @@ Nick Tallant
 tallant.learner
 
 This file contains functions for:
-- Machine Learning Models/Algorithms
-- Feature/Predictor Generation
-- Learning Model Evaluation 
+- Machine Learning Methods/Algorithms
+- Some Model Evaluation 
 '''
 
 import numpy as np
 import pandas as pd
 
-# Sci-kit Learn Imports
-from sklearn.metrics import confusion_matrix
+# Machine Learning Methods 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression 
+from sklearn.svm import SVC
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier 
+from sklearn.ensemble import BaggingClassifier #keep in mind what weak learners you want
+from sklearn.ensemble import AdaBoostClassifier
+
+# Evaluation Metrics
 from sklearn.metrics import accuracy_score as accuracy
 from sklearn.metrics import precision_score, recall_score, roc_auc_score
+from sklearn.metrics import confusion_matrix
+
 from sklearn.cross_validation import train_test_split
 
-def rough_binary_eval(x_test, y_test, model):
-    '''
-    Gives a rough accuracy estimate (don't put faith in this).
-    This anser is different than model.score(x,y) - ask why this is. 
-    '''
-
-    con_mat = confusion_matrix(y_test, model.predict(x_test))
-    return np.trace(con_mat)/np.sum(con_mat)
 
 def k_nearest_nick(x_train, y_train, x_test, y_test):
     '''
@@ -46,9 +47,7 @@ def k_nearest_nick(x_train, y_train, x_test, y_test):
             knn = KNeighborsClassifier(n_neighbors=k,
                                        weights=weight_func)
             cur_model = knn.fit(x_train, y_train)
-            
             test_pred = cur_model.predict(x_test)
-            
             metrics = get_metrics(y_test, test_pred) 
             list_of_models.append(['{} neighbors'.format(k),
                                    weight_func] + list(metrics))
@@ -64,6 +63,7 @@ def compare_trees(x_train, y_train, x_test, y_test):
         dec_tree.fit(x_train, y_train)
         train_pred = dec_tree.predict(x_train)
         test_pred = dec_tree.predict(x_test)
+        
         # evaluate accuracy
         train_acc = accuracy(train_pred, y_train)
         acc, pre, recall, roc_auc = get_metrics(y_test, test_pred) 
@@ -79,6 +79,7 @@ def see_tree_importance(x_train, tree):
            pd.Series(tree.feature_importances_, name='Importance')],
                axis=1)
 
+# Move this to evaluation.py ?
 def get_metrics(true, predicted):
     acc = accuracy(predicted, true)
     pre = precision_score(true, predicted) 
