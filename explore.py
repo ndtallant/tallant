@@ -18,6 +18,7 @@ from warnings import warn
 
 from sklearn.preprocessing import Imputer
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import label_binarize
 
 #importlotly.plotly as py
 #importlotly.graph_objs as go
@@ -89,6 +90,11 @@ def dumb_cats(df):
         else:
             dumb_df = dumb_df.join(df[feature])
     return dumb_df 
+
+def binarize(df, true='t', false='f'):
+    for feat in df.columns:
+        if set(df[feat].unique()) == set([false, true]):
+            df[feat] = label_binarize(df[feat], classes=[false, true])
 
 def replace_na_random(feature, lower, upper):
     '''
