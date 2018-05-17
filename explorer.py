@@ -109,9 +109,11 @@ def binarize(df, true='t', false='f'):
 
 def impute_mean(df, feature):
     '''Imputes Nans as the mean, note the input as a series.'''
-    imp = Imputer(copy=False, axis=1)
-    array = df[feature].values.reshape(1, -1)
-    df[feature] = imp.fit_transform(array)[0]
+    #imp = Imputer(copy=False, axis=1)
+    #array = df[feature].values.reshape(1, -1)
+    #df[feature].replace(df[feature], imp.fit_transform(array)[0], inplace=True)
+    mn = df[feature].dropna().mean()
+    df[feature].fillna(mn, inplace=True)
 
 def replace_na_random(feature, lower, upper):
     '''

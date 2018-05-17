@@ -31,15 +31,13 @@ class Kronos:
 
     def create_date_features(self, humanize=False):
         self.make_datetime()
-        self.get_months(humanize=humanize)
+        self.get_month(humanize=humanize)
+        self.get_year() 
         self.get_weekday(humanize=humanize)
         self.get_day_of_year()
         self.get_radial_season()
         self.get_year() 
         #self.get_season
-
-    def get_year(self):
-        self.df['year'] = self.df[self.feature].apply(lambda x: x.year)
     
     def make_datetime(self):
         '''
@@ -50,7 +48,10 @@ class Kronos:
         # Think about exception handling 
         self.df[self.feature] = pd.to_datetime(self.df[self.feature]) 
         
-    def get_months(self, humanize=True):
+    def get_year(self):
+        self.df['year'] = self.df[self.feature].apply(lambda x: x.year)
+    
+    def get_month(self, humanize=False):
         '''
         Returns the name of the month from timeseries data.
         Can return just the series or will add the feature to the df.
@@ -75,7 +76,7 @@ class Kronos:
         else:
             self.df['month'] = self.df[self.feature].apply(lambda x: x.month)
     
-    def get_weekday(self, humanize=True):
+    def get_weekday(self, humanize=False):
         '''
         Returns the name of the weekday from timeseries data.
         Can return just the series or will add the feature to the df.
