@@ -30,6 +30,14 @@ from sklearn.metrics import confusion_matrix
 
 from sklearn.cross_validation import train_test_split
 
+def make_year_month_split(df):
+    '''Returns a list of tuples in the form of: [(year, [months]), ...]'''
+    rv = []
+    years = sorted(list(df['year'].unique())) 
+    for year in years:
+        months = sorted(df[df['year'] == year]['month'].unique())
+        rv.append((year, months))
+    return rv
 
 def k_nearest_nick(x_train, y_train, x_test, y_test):
     '''
