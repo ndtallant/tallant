@@ -48,7 +48,7 @@ def snakify_cols(df, verbose=True):
 
 def quick_summary(df):
     '''Shows each column, if it has nans, its type, and an example value''' 
-    cols = ['Feature', 'Missing', 'Type', 'Example']
+    cols = ['Feature', 'Missing', 'Type', 'Uniques', 'Example']
     return pd.concat([pd.DataFrame([qsum_helper(df, feature)], columns=cols) 
                       for feature in df.columns], 
                       ignore_index=True).set_index('Feature')
@@ -57,7 +57,8 @@ def qsum_helper(df, feature):
     '''Returns single row to quick_summary''' 
     return [feature, 
             nan_scan(df, feature), 
-            get_var_cat(df, feature), 
+            get_var_cat(df, feature),
+            len(df[feature].unique()),
             df[feature].loc[0]]
 
 def get_var_cat(df, feature):
@@ -104,7 +105,13 @@ def binarize(df, true='t', false='f'):
         if set(df[feat].unique()) == set([false, true]):
             df[feat] = label_binarize(df[feat], classes=[false, true])
             df[feat] = df[feat].astype('category')
-            
+
+def impute_mean(df, feature):
+    '''Imputes Nans as the mean, note the input as a series.'''
+    imp = Imputer(copy=False, axis=1)
+    array = df[feature].values.reshape(1, -1)
+    df[feature] = imp.fit_transform(array)[0]
+
 def replace_na_random(feature, lower, upper):
     '''
     Replaces any Null values in a feature with a random int
@@ -177,3 +184,5 @@ def snakify(feature, verbose=False):
 
 #plotistograms/kde plots of distributions, 
 #scatterlot to show relationship between two vars, etc)
+
+#http://pandas.pydata.org/pandas-docs/stable/groupby.html#iterating-through-groups
