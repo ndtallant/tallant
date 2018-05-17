@@ -25,7 +25,6 @@ class Elephant:
         self.dbusername = dbusername
         self.dbpasswd = dbpasswd
         self.conn = self.open_connection() 
-        print("Don't forget to close!")
     
     def open_connection(self):
         '''Opens a connection to a psql database, using self.db params'''
@@ -34,6 +33,8 @@ class Elephant:
                                     user=self.dbusername, 
                                     password=self.dbpasswd, 
                                     host=self.dbhost)
+            
+            print('Connected to', self.dbname)
             return conn 
         
         except ConnectionError:
@@ -42,6 +43,7 @@ class Elephant:
     def close_connection(self):
         '''Closes any active connection'''
         self.conn.close() 
+        print('Connection closed') 
         return True
 
     def basic_query(self, query):
@@ -78,17 +80,17 @@ class Feather:
     def __init__(self, dbname=''):
         self.dbname = dbname
         self.conn = self.open_connection() 
-        print("Don't forget to close!")
-   
 
     def open_connection(self):
         '''Opens a connection to a psql database, using self.db params'''
         conn = sqlite3.connect(self.dbname) 
+        print('Connected to', self.dbname) 
         return conn 
 
     def close_connection(self):
         '''Closes any active connection'''
         self.conn.close() 
+        print('Closed connection') 
         return True
 
     def basic_query(self, query):
@@ -104,5 +106,4 @@ class Feather:
     
     def __exit__(self, *args):
         '''Guarantees a closed connection, *args are three exception types.'''        
-        print('All done!')
         self.close_connection()

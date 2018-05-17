@@ -39,6 +39,11 @@ def load_data(data, verbose=True):
     snakify_cols(df) 
     return df
 
+def factor_df(df):
+    for feature in df.columns:
+        if df[feature].dtype == 'O' and len(df[feature].unique()) > 2:
+            df[feature] = df[feature].factorize()[0]
+
 def snakify_cols(df, verbose=True):
    '''
    Takes in a dataframe and alters the columns/features
@@ -189,11 +194,5 @@ def snakify(feature, verbose=False):
     # find a way to get rid of source line for this warning. 
     return snake_feature
 
-#dev to-do
-#dealingith outliers, 
-#discretizingontinuous/categorical data
-
-#plotistograms/kde plots of distributions, 
-#scatterlot to show relationship between two vars, etc)
-
-#http://pandas.pydata.org/pandas-docs/stable/groupby.html#iterating-through-groups
+# Dev Notes for later
+# http://pandas.pydata.org/pandas-docs/stable/groupby.html#iterating-through-groups

@@ -3,7 +3,6 @@ Nick Tallant
 tallant.pipeline
 
 This file is a machine learning pipeline.
-
 '''
 
 import numpy as np
@@ -41,9 +40,11 @@ CLFS = {  'knn': KNeighborsClassifier(n_neighbors=3),
           'svm': SVC(kernel='linear', probability=True, random_state=0),
            'nb': GaussianNB, 
            'rf': RandomForestClassifier(n_estimators=50, n_jobs=-1), 
-          'gbc': GradientBoostingClassifier(learning_rate=0.05, subsample=0.5, max_depth=6, n_estimators=10),
+          'gbc': GradientBoostingClassifier(learning_rate=0.05, subsample=0.5, 
+                                            max_depth=6, n_estimators=10),
           'bag': BaggingClassifier(),
-          'ada': AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), algorithm="SAMME", n_estimators=200)} 
+          'ada': AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), 
+                                    algorithm="SAMME", n_estimators=200)} 
 
 PARAMS = {'knn': {'n_neighbors': [1, 5, 10, 25, 50, 100],
                   'weights': ['uniform', 'distance'],
@@ -117,21 +118,3 @@ def sort_by_score(y_scores, y_true):
     ''' 
     sort_index = np.argsort(y_scores)[::-1]
     return y_scores[sort_index], y_true[sort_index]
-
-def full_loop(full_data, clean_split=None):
-    '''
-    for dataset in splits:
-        impute missing values
-        handle outliers
-    '''
-    pass
-
-#    for split_set in SPLITS:
- #       X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
-
-  #  if clean_split:
-   #     clean_split()        
-
-def get_splits(X, y):
-    pass
-# Cross Validation TTS or Temporal Holdout
