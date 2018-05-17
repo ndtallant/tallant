@@ -74,47 +74,64 @@ PARAMS = {'knn': {'n_neighbors': [1, 5, 10, 25, 50, 100],
 def single_split_loop(X_train, y_train, X_test, y_test):
     '''Loops over methods and params using a single train test split''' 
     
-    single_results = pd.DataFrame(columns=['Method', 'Parameters'] + EVAL_COLS) 
+    rv = pd.DataFrame(columns=['Method', 'Parameters'] + EVAL_COLS) 
     
     for current in METHODS:
         print('Running', current)
         method, params = CLFS[current], PARAMS[current]
         for p in ParameterGrid(params):
             print(p) 
-            try:
-                method.set_params(**p)
-                y_pred_probs = method.fit(X_train, y_train).predict_proba(X_test)[:,1]
-                y_pred_probs_sorted, y_test_sorted = zip(*sorted(zip(y_pred_probs, y_test), reverse=True))
-                ''' 
-                results_df.loc[len(results_df)] = [current, p, roc_auc_score(y_test, y_pred_probs)] + 
-                                                   precision_at_k(y_test_sorted,y_pred_probs_sorted,5.0),
-                                                   precision_at_k(y_test_sorted,y_pred_probs_sorted,10.0),
-                                                   precision_at_k(y_test_sorted,y_pred_probs_sorted,20.0)]
-                ''' 
-            except IndexError as e:
-                print('Error:',e)
-                continue
-    return single_results
+            method.set_params(**p)
+            y_pred_probs = method.fit(X_train, y_train).predict_proba(X_test)[:,1]
+            y_scores, y_true = zip(*sorted(zip(y_pred_probs, y_test), reverse=True))
+                
+            try: # Can have issues with multiclass tasks 
+                roc_auc = roc_auc_score(y_true, y_scores)
+            except ValueError:
+                roc_auc = 'N/A'
+                
+            front = [current, p, roc_auc] 
+            back = [thr_precision(y_scores, y_true, thr) for thr in THRESHOLDS]
+            rv.loc[len(rv)] = front + back 
+    
+    return rv 
+
+def thr_precision(y_scores, y_true, thr):
+    '''Gets the precision score of a model for a given threshold.'''
+    y_scores, y_true = sort_by_score(np.array(y_scores), np.array(y_true))
+    preds_at_k = classify_on_threshold(y_scores, thr)
+    return precision_score(y_true, preds_at_k)
+
+def classify_on_threshold(y_scores, thr):
+    '''
+    Given sorted prediction scores and a threshold,
+    this function classifies each score as positive or negative.
+    '''
+    positive_bound = int(len(y_scores) * thr)
+    return [1 if i < positive_bound else 0 for i in range(len(y_scores))]
+
+def sort_by_score(y_scores, y_true):
+    '''
+    Sorts scores and true values by scores in descending order.
+    https://docs.scipy.org/doc/numpy-1.14.0/reference/generated/numpy.argsort.html
+    ''' 
+    sort_index = np.argsort(y_scores)[::-1]
+    return y_scores[sort_index], y_true[sort_index]
 
 def full_loop(full_data, clean_split=None):
+    '''
+    for dataset in splits:
+        impute missing values
+        handle outliers
+    '''
     pass
-    for split_set in SPLITS:
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
 
-    if clean_split:
-        clean_split()        
+#    for split_set in SPLITS:
+ #       X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+
+  #  if clean_split:
+   #     clean_split()        
 
 def get_splits(X, y):
     pass
 # Cross Validation TTS or Temporal Holdout
-
-'''
-for dataset in splits:
-    impute missing values
-    handle outliers
-
-    for each_method in methods:
-        fit on parameter permutation (grid or get_params)
-        eval prec, recall, roc_auc, thrs 
-        append to results
-'''
