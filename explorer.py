@@ -1,6 +1,6 @@
 '''
 Nick Tallant
-tallant.explore
+tallant.explorer
 
 This file contains functions to.
 
@@ -99,6 +99,14 @@ def dumb_cats(df):
         else:
             dumb_df = dumb_df.join(df[feature])
     return dumb_df 
+
+def flip_a_bin(df, feature):
+    '''Reverses the binary coding on a feature'''
+    try: 
+        pos, neg = df[feature].unique() 
+    except ValueError:
+        print('Not binary')
+    df[feature] = df[feature].apply(lambda x: pos if x == neg else neg)
 
 def binarize(df, true='t', false='f'):
     '''Binarizes every column in a df, can set the true and false labels''' 
