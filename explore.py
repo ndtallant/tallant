@@ -6,7 +6,7 @@ This file contains functions to.
 
 1.Read/Load Data
 2.Explore Data
-3.re-Process and Clean Data
+3.Pre-Process and Clean Data
 '''
 import re
 import os
@@ -14,6 +14,7 @@ import random
 import numpy as np
 import pandas as pd
 from warnings import warn
+from scipy.stats import boxcox
 
 #from utils import snakify
 

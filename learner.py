@@ -21,6 +21,8 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import BaggingClassifier #keep in mind what weak learners you want
 from sklearn.ensemble import AdaBoostClassifier
 
+from sklearn.grid_search import ParameterGrid
+
 # Evaluation Metrics
 from sklearn.metrics import accuracy_score as accuracy
 from sklearn.metrics import precision_score, recall_score, roc_auc_score
