@@ -32,7 +32,7 @@ from sklearn.cross_validation import train_test_split
 
 THRESHOLDS = [.01, .02, .05, .10, .20, .30, .50]
 EVAL_COLS = ['1%', '2%', '5%', '10%', '20%', '30%', '50%', 'ROC AUC']
-METHODS = ['knn', 'dt', 'logit', 'svm', 'rf', 'gbc', 'bag', 'ada'] 
+METHODS = ['knn', 'dt', 'logit', 'rf', 'gbc', 'bag', 'ada']#svm 
 
 CLFS = {  'knn': KNeighborsClassifier(n_neighbors=3), 
            'dt': DecisionTreeClassifier(), 
