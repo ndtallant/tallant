@@ -14,6 +14,43 @@ import psycopg2
 import sqlite3
 import pandas as pd
 
+class BaseClient:
+    '''General python database client API'''
+    
+    def __init__(self, dbname=''):
+        self.dbname = dbname
+        self.conn = self.open_connection() 
+
+    def open_connection(self, package=None):
+        '''Returns a database connection object, using self.db params'''
+        try: 
+            conn = package.connect(self.dbname) 
+            print('Connected to', self.dbname) 
+            return conn
+        except Error as e:
+            print("Can't connect to db:", e)
+    
+    def basic_query(self, query):
+        cur = self.conn.cursor()
+        cur.execute(query)
+        data = cur.fetchall()
+        cols = [desc[0] for desc in cur.description]
+        cur.close()
+        return pd.DataFrame.from_records(data, columns=cols)
+
+    def close_connection(self):
+        '''Closes any active connection'''
+        self.conn.close() 
+        print('Closed connection') 
+        return True
+    
+    def __enter__(self):
+        return self 
+    
+    def __exit__(self, *args):
+        '''Guarantees a closed connection, *args are three exception types.'''        
+        self.close_connection()
+
 class Elephant:
     '''
     psql client
@@ -73,37 +110,11 @@ class Elephant:
         return True
 
 
-class Feather:
+class Feather(BaseClient):
     '''
     SQLite client
     '''
     def __init__(self, dbname=''):
         self.dbname = dbname
-        self.conn = self.open_connection() 
+        self.conn = self.open_connection(package=sqlite3) 
 
-    def open_connection(self):
-        '''Opens a connection to a psql database, using self.db params'''
-        conn = sqlite3.connect(self.dbname) 
-        print('Connected to', self.dbname) 
-        return conn 
-
-    def close_connection(self):
-        '''Closes any active connection'''
-        self.conn.close() 
-        print('Closed connection') 
-        return True
-
-    def basic_query(self, query):
-        cur = self.conn.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
-        cols = [desc[0] for desc in cur.description]
-        cur.close()
-        return pd.DataFrame.from_records(data, columns=cols)
-
-    def __enter__(self):
-        return self 
-    
-    def __exit__(self, *args):
-        '''Guarantees a closed connection, *args are three exception types.'''        
-        self.close_connection()
