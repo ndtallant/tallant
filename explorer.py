@@ -61,7 +61,7 @@ def scale_numeric(df):
             except ValueError:
                 try:
                     df[feature] = boxcox(df[feature])[0]
-                except ValueError:
+                except: # I know ...
                     continue
 
 def boxcox_df(df, feature_list):
