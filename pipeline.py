@@ -92,22 +92,24 @@ def single_split_loop(X_train, y_train, X_test, y_test, quick=False):
     
     for current in running:
         print('Running', current)
-        method, params = CLFS[current], param_gr[current]
-        for p in ParameterGrid(params):
-            print(p) 
-            method.set_params(**p)
-            y_pred_probs = method.fit(X_train, y_train).predict_proba(X_test)[:,1]
-            y_scores, y_true = zip(*sorted(zip(y_pred_probs, y_test), reverse=True))
-                
-            try: # Can have issues with multiclass tasks 
-                roc_auc = roc_auc_score(y_true, y_scores)
-            except ValueError:
-                roc_auc = 'N/A'
-                
-            front = [current, p, roc_auc] 
-            back = [thr_precision(y_scores, y_true, thr) for thr in THRESHOLDS]
-            rv.loc[len(rv)] = front + back 
-    
+        try: 
+            method, params = CLFS[current], param_gr[current]
+            for p in ParameterGrid(params):
+                print(p) 
+                method.set_params(**p)
+                y_pred_probs = method.fit(X_train, y_train).predict_proba(X_test)[:,1]
+                y_scores, y_true = zip(*sorted(zip(y_pred_probs, y_test), reverse=True))
+                    
+                try: # Can have issues with multiclass tasks 
+                    roc_auc = roc_auc_score(y_true, y_scores)
+                except ValueError:
+                    roc_auc = 'N/A'
+                    
+                front = [current, p, roc_auc] 
+                back = [thr_precision(y_scores, y_true, thr) for thr in THRESHOLDS]
+                rv.loc[len(rv)] = front + back 
+        except ValueError: # All negatives in a split
+            continue
     return rv 
 
 def thr_precision(y_scores, y_true, thr):
