@@ -32,7 +32,8 @@ from sklearn.cross_validation import train_test_split
 
 THRESHOLDS = [.01, .02, .05, .10, .20, .30, .50]
 EVAL_COLS = ['1%', '2%', '5%', '10%', '20%', '30%', '50%', 'ROC AUC']
-METHODS = ['knn', 'dt', 'logit', 'rf', 'gbc', 'bag', 'ada']#svm 
+METHODS = ['knn', 'dt', 'logit', 'svm', 'rf', 'gbc', 'bag', 'ada'] 
+BASICS = ['knn', 'dt', 'logit']
 
 CLFS = {  'knn': KNeighborsClassifier(n_neighbors=3), 
            'dt': DecisionTreeClassifier(), 
@@ -72,14 +73,26 @@ PARAMS = {'knn': {'n_neighbors': [1, 5, 10, 25, 50, 100],
     
           'ada': {'algorithm': ['SAMME', 'SAMME.R'], 'n_estimators': [10**n for n in range(5)]}}
 
-def single_split_loop(X_train, y_train, X_test, y_test):
+SMALL = {'knn': {'n_neighbors': [5, 10, 25],
+                  'weights': ['uniform', 'distance'],
+                  'algorithm': ['auto']},
+           
+         'dt': {'criterion': ['gini', 'entropy'], 
+                 'max_depth': [1, 5, 10],
+                 'min_samples_split': [2, 5]},
+
+         'logit': {'penalty': ['l2'], 'C': [10**n for n in range(-2,2)]}}
+
+def single_split_loop(X_train, y_train, X_test, y_test, quick=False):
     '''Loops over methods and params using a single train test split''' 
-    
+     
     rv = pd.DataFrame(columns=['Method', 'Parameters'] + EVAL_COLS) 
+    running = BASICS if quick else METHODS 
+    param_gr = SMALL if quick else PARAMS 
     
-    for current in METHODS:
+    for current in running:
         print('Running', current)
-        method, params = CLFS[current], PARAMS[current]
+        method, params = CLFS[current], param_gr[current]
         for p in ParameterGrid(params):
             print(p) 
             method.set_params(**p)

@@ -19,6 +19,7 @@ from scipy.stats import boxcox
 #from utils import snakify
 
 from sklearn.preprocessing import Imputer
+from sklearn.preprocessing import minmax_scale
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import label_binarize
 
@@ -51,6 +52,25 @@ def snakify_cols(df, verbose=True):
    '''
    cols = {col:snakify(col, verbose=verbose) for col in df.columns}
    df.rename(columns=cols, inplace=True)
+
+def scale_numeric(df):
+    for feature in df.columns:
+        if df[feature].dtype == 'int64':
+            try:
+                df[feature] = minmax_scale(df[feature])
+            except ValueError:
+                try:
+                    df[feature] = boxcox(df[feature])[0]
+                except ValueError:
+                    continue
+
+def boxcox_df(df, feature_list):
+    for feature in feature_list:
+        df[feature] = boxcox(df[feature])[0] 
+
+def minmax_df(df, feature_list):
+    for feature in feature_list:
+        df[feature] = minmax_scale(df[feature])
 
 def quick_summary(df):
     '''Shows each column, if it has nans, its type, and an example value''' 
