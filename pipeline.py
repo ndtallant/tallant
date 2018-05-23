@@ -30,10 +30,10 @@ from sklearn.metrics import precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import ParameterGrid
 from sklearn.cross_validation import train_test_split
 
-THRESHOLDS = [.01, .02, .05, .10, .20, .30, .50]
-EVAL_COLS = ['1%', '2%', '5%', '10%', '20%', '30%', '50%', 'ROC AUC']
-METHODS = ['knn', 'dt', 'logit', 'svm', 'rf', 'gbc', 'bag', 'ada'] 
 BASICS = ['knn', 'dt', 'logit']
+METHODS = ['knn', 'dt', 'logit', 'svm', 'rf', 'gbc', 'bag', 'ada'] 
+PERCENTS = [.01, .02, .05, .10, .20, .30, .50]
+EVAL_COLS = ['1%', '2%', '5%', '10%', '20%', '30%', '50%', 'ROC AUC']
 
 CLFS = {  'knn': KNeighborsClassifier(n_neighbors=3), 
            'dt': DecisionTreeClassifier(), 
@@ -106,16 +106,17 @@ def single_split_loop(X_train, y_train, X_test, y_test, quick=False):
                     roc_auc = 'N/A'
                     
                 front = [current, p, roc_auc] 
-                back = [thr_precision(y_scores, y_true, thr) for thr in THRESHOLDS]
+                back = [pct_precision(y_scores, y_true, pct) for pct in PERCENTS]
                 rv.loc[len(rv)] = front + back 
+        
         except ValueError: # All negatives in a split
             continue
     return rv 
 
-def thr_precision(y_scores, y_true, thr):
-    '''Gets the precision score of a model for a given threshold.'''
+def pct_precision(y_scores, y_true, pct):
+    '''Gets the precision score of a model for a given percentage targeted.'''
     y_scores, y_true = sort_by_score(np.array(y_scores), np.array(y_true))
-    preds_at_k = classify_on_threshold(y_scores, thr)
+    preds_at_k = classify_on_threshold(y_scores, pct)
     return precision_score(y_true, preds_at_k)
 
 def classify_on_threshold(y_scores, thr):
