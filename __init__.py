@@ -1,13 +1,13 @@
 '''
-Nick Tallant
-
-__init__ file for the 'tallant' package, a
-collection of personal modules, functions, etc.
+Nick Tallant's collection of personal functions of classes.
 
 Modules:
-    explore.py
-    learner.py
-         db.py
+    - evaluate.py  
+    - features.py  
+    - learners.py
+    - database.py  
+    - explorer.py
+    - pipeline.py
 
-Updated May '18
+Updated May '18 
 '''
