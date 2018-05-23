@@ -32,7 +32,7 @@ from sklearn.metrics import auc, classification_report, confusion_matrix
 EVAL_COLS = ['1%', '2%', '5%', '10%', '20%', '30%', '50%', 'ROC AUC']
 
 def get_top_models(results_file):
-    '''Returns a DataFrame of the top models from the results csv.'''
+    '''Returns a DataFrame of the top models from a results csv.'''
     rv = pd.DataFrame() 
     df = pd.read_csv(results_file)
     for level in EVAL_COLS:
@@ -60,12 +60,12 @@ def plot_roc(name, y_scores, y_true, output_type):
     else:
         plt.show()
 
-def thresh_metric(y_scores, y_true, thr, recall=False):
+def thresh_metric(y_scores, y_true, pct, recall=False):
     '''
-    Gets the precision score of a model for a given threshold.
+    Gets the precision score of a model for a given percentage.
     '''
     y_scores, y_true = sort_by_score(np.array(y_scores), np.array(y_true))
-    preds_at_k = classify_on_threshold(y_scores, thr)
+    preds_at_k = classify_on_threshold(y_scores, pct)
     if recall:
         return recall_score(y_true, preds_at_k)
     return precision_score(y_true, preds_at_k)
