@@ -119,7 +119,7 @@ def dumb_cats(df):
     dumb_df = pd.DataFrame(index=df.index)
     for feature in df.columns:
         if df[feature].dtype == 'O':
-            dummied = pd.get_dummies(data[feature], prefix=feature, dummy_na=True)
+            dummied = pd.get_dummies(df[feature], prefix=feature, dummy_na=True)
             dumb_df = dumb_df.join(dummied)
         else:
             dumb_df = dumb_df.join(df[feature])
