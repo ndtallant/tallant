@@ -10,8 +10,9 @@ This file contains clients for different database engines, currently:
 It may be cleaner to have one client class, and have the db-engine specified.
 But will have to take a look at the different APIs.
 '''
-import psycopg2
+import pyodbc # SQL Server
 import sqlite3
+import psycopg2 # Postgres
 import pandas as pd
 
 class BaseClient:
@@ -24,7 +25,7 @@ class BaseClient:
     def open_connection(self, package=None):
         '''Returns a database connection object, using self.db params'''
         try: 
-            conn = package.connect(self.dbname) 
+            conn = package.connect(self.dbname, **kwargs) 
             print('Connected to', self.dbname) 
             return conn
         except Error as e:
@@ -50,6 +51,12 @@ class BaseClient:
     def __exit__(self, *args):
         '''Guarantees a closed connection, *args are three exception types.'''        
         self.close_connection()
+
+class Microsoft:
+    '''
+    SQL Server client? May need to compare all of these APIs and finally learn
+    SQLAlchemy
+    '''
 
 class Elephant:
     '''
