@@ -5,6 +5,8 @@ tallant.utils
 This file contains misc. helper functions
 '''
 import re
+import json
+import pandas as pd
 
 def snakify(feature, verbose=False):
     '''
@@ -34,8 +36,21 @@ def snakify(feature, verbose=False):
     # find a way to get rid of source line for this warning. 
     return snake_feature
 
-def make_dict_from_lists(l1, l2):
-    try:
-        return {l1[i]: l2[i] for i in range(len(l1))}
-    except:
-        print('no way jose')
+def make_json(dictionary, filename):
+    '''Makes a json from a dictionary'''
+    data = json.dumps(dictionary)
+    f = open(filename)
+    f.write(data)
+    f.close()
+
+def read_json(filename):
+    '''Makes a dictionary from a json'''
+    with open(filename) as f:
+        data = f.read()
+    return json.loads(data)
+
+def read_sql(filename, con):
+    '''Makes a dataframe from a sql file'''
+    with open(filename) as f:
+            sql = f.read()
+    return pd.read_sql(sql, con)
