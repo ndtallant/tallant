@@ -19,7 +19,7 @@ class Kronos:
 
     https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
     '''
-    def __init__(self, df, feature, create_date=False):
+    def __init__(self, df, feature, create_date=False, humanize=False):
         '''
         Just takes in a string of the feature of interest.
         Does not wrap an entire dataframe for memory reasons.
@@ -27,7 +27,7 @@ class Kronos:
         self.df = df 
         self.feature = feature
         if create_date:
-            self.create_date_features()
+            self.create_date_features(humanize=humanize)
 
     def create_date_features(self, humanize=False):
         self.make_datetime()
@@ -37,7 +37,7 @@ class Kronos:
         self.get_day_of_year()
         self.get_radial_season()
         self.get_year() 
-        #self.get_season
+        self.get_season()
     
     def make_datetime(self):
         '''
@@ -130,9 +130,17 @@ class Kronos:
         Returns the season from timeseries data.
         Can return just the series or will add the feature to the df.
         '''
-        #Going to need to define custom bins 
-        #pd.cut(df['day_of_year'], ['Spring', 'Summer', 'Fall', 'Winter']) 
-        raise NotImplementedError
+        self.df['season'] = self.df.day_of_year.apply(self._season_helper) 
+        
+    def _season_helper(self, day_of_year):
+        '''Helps create seasons'''
+        if day_of_year < 79 or day_of_year > 344:
+            return 'Winter'
+        if day_of_year > 264:
+            return 'Autumn'
+        if day_of_year > 171:
+            return 'Summer'
+        return 'Spring'
 
     def get_radial_season(self):
         '''

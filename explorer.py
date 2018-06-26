@@ -24,8 +24,8 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import label_binarize
 
 import seaborn as sns
-import plotly.plotly as py
-import plotly.graph_objs as go
+#import plotly.plotly as py
+#import plotly.graph_objs as go
 import matplotlib.pyplot as plt
 
 
