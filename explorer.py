@@ -74,7 +74,12 @@ def minmax_df(df, feature_list):
 
 def quick_summary(df):
     '''Shows each column, if it has nans, its type, and an example value''' 
-    cols = ['Feature', 'Missing', 'Type', 'Uniques', 'Example']
+    cols = ['Feature'
+            , '% Missing'
+            , 'Type'
+            , 'Uniques'
+            , 'Example'
+            ]
     return pd.concat([pd.DataFrame([qsum_helper(df, feature)], columns=cols) 
                       for feature in df.columns], 
                       ignore_index=True).set_index('Feature')
@@ -82,10 +87,12 @@ def quick_summary(df):
 def qsum_helper(df, feature):
     '''Returns single row to quick_summary''' 
     return [feature, 
-            nan_scan(df, feature), 
+            #nan_scan(df, feature), 
+            round(len(df[df[feature].isnull()]) / len(df) * 100), 
             get_var_cat(df, feature),
             len(df[feature].unique()),
-            df[feature].loc[0]]
+            df.loc[df.index[0], feature]
+            ]
 
 def get_var_cat(df, feature):
     '''Returns either Numerical, Date, Text, or Categorical'''
