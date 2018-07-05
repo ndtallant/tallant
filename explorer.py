@@ -121,12 +121,12 @@ def make_numeric(df, feature_list):
     for feature in feature_list:
         df[feature] = pd.to_numeric(df[feature])
 
-def dumb_cats(df):
+def dumb_cats(df, sparse=False):
     '''Dummifies all categorical features (dtype object)''' 
     dumb_df = pd.DataFrame(index=df.index)
     for feature in df.columns:
-        if df[feature].dtype == 'O':
-            dummied = pd.get_dummies(df[feature], prefix=feature, dummy_na=True)
+        if df[feature].dtype == 'O' and len(df[feature].unique()) > 2:
+            dummied = pd.get_dummies(df[feature], prefix=feature, drop_first=True, sparse=sparse)
             dumb_df = dumb_df.join(dummied)
         else:
             dumb_df = dumb_df.join(df[feature])
