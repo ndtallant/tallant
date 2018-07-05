@@ -125,7 +125,7 @@ def dumb_cats(df, sparse=False):
     '''Dummifies all categorical features (dtype object)''' 
     dumb_df = pd.DataFrame(index=df.index)
     for feature in df.columns:
-        if df[feature].dtype == 'O' and len(df[feature].unique()) > 2:
+        if df[feature].dtype == 'O':
             dummied = pd.get_dummies(df[feature], prefix=feature, drop_first=True, sparse=sparse)
             dumb_df = dumb_df.join(dummied)
         else:
