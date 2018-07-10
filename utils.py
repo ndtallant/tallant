@@ -8,6 +8,16 @@ import re
 import json
 import pandas as pd
 
+def pad_zeroes(val, length, front=True):
+    '''
+    Pads zeroes to the front or end of a string
+    given a length.
+    '''
+    if len(val) >= length:
+        return val
+    val = '0' + val if front else val + '0'
+    return pad_zeroes(val, length, front=front)
+
 def snakify(feature, verbose=False):
     '''
     Changes a feature label to a useful form, by
