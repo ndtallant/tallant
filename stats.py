@@ -4,7 +4,7 @@ tallant.stats
 This file contains functions / helpers for statistical analysis in python.
 
 '''
-
+import matplotlib.pyplot as plt
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 
 def tukey(df, target, factor, sig_lvl=0.05):
