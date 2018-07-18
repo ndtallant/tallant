@@ -4,8 +4,12 @@ tallant.stats
 This file contains functions / helpers for statistical analysis in python.
 
 '''
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
 import matplotlib.pyplot as plt
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
+from statsmodels.tools.eval_measures import mse, rmse, bias
 
 def tukey(df, target, factor, sig_lvl=0.05):
     '''
@@ -23,8 +27,30 @@ def tukey(df, target, factor, sig_lvl=0.05):
     '''
     tukey_ = pairwise_tukeyhsd(endog=df[target],    
                                groups=df[factor], 
-                               alpha=0.05)
-    tukey_.plot_simultaneous()    # Plot group confidence intervals
-    plt.vlines(x=df[target].mean(), ymin=-0.5,ymax=100, color="red")
+                               alpha=sig_lvl)
+    tukey_.plot_simultaneous() # Plot group confidence intervals
+    plt.axvline(x=df[target].mean(), color='r')
 
-    return tukey_.summary() 
+    return tukey_.summary()
+
+def MAPE(y_pred, y_true):
+    '''
+    Mean Absolute Percentage Error
+    
+    - It cannot be used if there are zero values.
+    - Models with high predictions have no upper limit to the percentage error.
+    - When MAPE is used to compare the accuracy of prediction methods, it is 
+      biased towards models whose predictions are too low.
+    '''
+    pred = np.asarray(y_pred)
+    true = np.asarray(y_true)
+    return round(np.sum(np.fabs((pred - true)/pred))/len(true) * 100, 3)
+
+def MSE(y_pred, y_true):
+    return mse(y_pred, y_true)
+
+def RMSE(y_pred, y_true):
+    return rmse(y_pred, y_true)
+
+def Bias(y_pred, y_true):
+    return bias(y_pred, y_true)
