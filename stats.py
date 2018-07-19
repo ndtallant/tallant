@@ -33,6 +33,27 @@ def tukey(df, target, factor, sig_lvl=0.05):
 
     return tukey_.summary()
 
+def OLS(df, y, X=None):
+    '''I don't like the statsmodels api so here's this.''' 
+    X = df[X] if X else df.drop(y, axis=1)
+    X = add_constant(X)
+    y = df[y]
+    return sm.OLS(np.asarray(y), np.asarray(X)).fit()
+
+def make_restricted(df, exog, endog):
+    data = df[exog + [endog]]
+    data = xp.dumb_cats(data, drop=True)
+    return OLS(data, endog)
+
+def exclusion_test(unrestricted, restricted, sig_lvl=0.05):
+    '''Returns True if significant difference between unrestricted and restricted model.'''
+    dfn = restricted.df_resid - unrestricted.df_resid
+    numer = (unrestricted.rsquared - restricted.rsquared) / dfn
+    denom = (1 - unrestricted.rsquared) / unrestricted.df_resid
+    F = numer / denom
+    crit_val = f_dist.ppf(q=1-sig_lvl, dfn=dfn, dfd=unrestricted.df_resid)
+    return F > crit_val
+
 def MAPE(y_pred, y_true):
     '''
     Mean Absolute Percentage Error
