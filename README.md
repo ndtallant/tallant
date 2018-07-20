@@ -9,3 +9,6 @@ Specifically,
 - `database.py`  A collection of python database clients.
 - `explorer.py`  Helpers for data exploration and cleaning.
 - `pipeline.py`  A machine learning pipeline.
+- `utils.py`
+- `stats`
+    - `stats.py`
