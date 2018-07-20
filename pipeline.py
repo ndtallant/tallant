@@ -108,8 +108,9 @@ def single_split_loop(X_train, y_train, X_test, y_test, quick=False):
                 front = [current, p, roc_auc] 
                 back = [pct_precision(y_scores, y_true, pct) for pct in PERCENTS]
                 rv.loc[len(rv)] = front + back 
-        
-        except ValueError: # All negatives in a split
+                print(len(rv)) 
+        except ValueError as e: # All negatives in a split
+            print(e) 
             continue
     return rv 
 
