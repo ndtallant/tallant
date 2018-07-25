@@ -4,6 +4,7 @@
 - TBA
 
 [For when you forget how to query stuff.](https://www.census.gov/data/developers/guidance/api-user-guide/query-examples.html)
+[For when you forget anything else](https://censusreporter.org/topics/getting-started/)
 
 Start your query with the host name: https://api.census.gov/data
 Add the data year to the URL; e.g., 2013
