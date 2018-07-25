@@ -8,8 +8,8 @@ class ACS:
         self.codes = ','.join(codes)
         self.geography = geography # lookup mulitple specific geos (not just *)
         self.key = key
-        self.query = self.base.format(year, dataset, codes, geography, key) 
+        self.query = self.base.format(year, dataset, self.codes, geography, key) 
 
     def see_query(self):
         '''Previews ACS query to the screen.'''
-        print(self.query[:len(key)])
+        print(self.query[: -len(self.key)])
