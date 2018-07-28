@@ -3,6 +3,8 @@
 ## Repository Structure
 - TBA
 
+[New Census API Changes (July 18)](https://www.census.gov/content/dam/Census/data/developers/acs/acs-data-variables-guide.pdf?eml=gd&utm_medium=email&utm_source=govdelivery)
+
 [For when you forget how to query stuff.](https://www.census.gov/data/developers/guidance/api-user-guide/query-examples.html)
 [For when you forget anything else](https://censusreporter.org/topics/getting-started/)
 

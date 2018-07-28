@@ -4,6 +4,7 @@ import pandas as pd
 
 class ACS:
     def __init__(self, year, dataset, codes, geography, key):
+        '''May need to be updated based on the census changes'''
         self.base = ('https://api.census.gov/data/{}/{}/'
                      'profile?get=NAME,{}&for={}&key={}')
         self.year = year
