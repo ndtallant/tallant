@@ -1,12 +1,14 @@
 # American Community Survey
 import requests
+import numpy as np
 import pandas as pd
 
 class ACS:
     def __init__(self, year, dataset, codes, geography, key):
         '''May need to be updated based on the census changes'''
-        self.base = ('https://api.census.gov/data/{}/{}/'
-                     'profile?get=NAME,{}&for={}&key={}')
+        self.base = ('https://api.census.gov/data/{}/{}'
+                     '?get=NAME,{}&for={}&key={}')
+        self._code_labels = False
         self.year = year
         self.dataset = dataset
         self.codes = self._parse_codes(codes)
@@ -35,10 +37,16 @@ class ACS:
     def get_data(self):
         response = requests.get(self.query)
         data = response.json()
-        df =  pd.read_json(data)
+        df =  pd.DataFrame(data)
         df.columns = list(df.loc[0]) 
         df.drop(0, inplace=True) 
         if self._code_labels:
-            df.rename(colums=_code_labels, inplace=True)
+            df.rename(colums=self._code_labels, inplace=True)
         df.replace('*****', np.NaN, inplace=True) 
         return df
+
+class newACS:
+    def __init__(self, year, dataset, codes, geography, key):
+        '''May need to be updated based on the census changes'''
+        self.base = ('https://api.census.gov/data/{}/{}/'
+                     'profile?get=NAME,{}&for={}&key={}')
