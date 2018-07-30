@@ -39,7 +39,7 @@ def make_year_month_split(df):
         rv.append((year, months))
     return rv
 
-def k_nearest_nick(x_train, y_train, x_test, y_test):
+def k_nearest_nick(x_train, y_train, x_test, y_test, metric_type=None):
     '''
     Trains and tests several knn models, 
     provides rough evaluation, and stores information
@@ -56,9 +56,10 @@ def k_nearest_nick(x_train, y_train, x_test, y_test):
         for weight_func in ['uniform', 'distance']:
             knn = KNeighborsClassifier(n_neighbors=k,
                                        weights=weight_func)
+            print('Running KNN: {} neighbors w/ {} weights'.format(k, weight_func))
             cur_model = knn.fit(x_train, y_train)
             test_pred = cur_model.predict(x_test)
-            metrics = get_metrics(y_test, test_pred) 
+            metrics = get_metrics(y_test, test_pred, average=metric_type) 
             list_of_models.append(['{} neighbors'.format(k),
                                    weight_func] + list(metrics))
             
@@ -90,9 +91,9 @@ def see_tree_importance(x_train, tree):
                axis=1)
 
 # Move this to evaluation.py ?
-def get_metrics(true, predicted):
+def get_metrics(true, predicted, average=None):
     acc = accuracy(predicted, true)
-    pre = precision_score(true, predicted) 
-    recall = recall_score(true, predicted) 
-    roc_auc = roc_auc_score(true, predicted)
+    pre = precision_score(true, predicted, average=average) 
+    recall = recall_score(true, predicted, average=average)
+    roc_auc = 'N/A' if average else roc_auc_score(true, predicted)
     return acc, pre, recall, roc_auc
