@@ -28,7 +28,7 @@ class ACS:
             return ','.join(codes) 
         if type(codes) == dict:
             self._code_labels = codes
-            return self._parse_codes(self, codes.keys())
+            return self._parse_codes(list(codes.keys()))
     
     def see_query(self):
         '''Previews ACS query to the screen.'''
@@ -41,7 +41,7 @@ class ACS:
         df.columns = list(df.loc[0]) 
         df.drop(0, inplace=True) 
         if self._code_labels:
-            df.rename(colums=self._code_labels, inplace=True)
+            df.rename(columns=self._code_labels, inplace=True)
         df.replace('*****', np.NaN, inplace=True) 
         return df
 
