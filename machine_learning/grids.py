@@ -103,3 +103,7 @@ short_clf = {'knn': {'n_neighbors': [5, 10, 25],
                  'min_samples_split': [2, 5]},
          
          'logit': {'penalty': ['l2'], 'C': [10**n for n in range(-2,2)]}}
+
+
+short_reg = {'lm': {'fit_intercept': [True]}
+        , 'lasso': {'fit_intercept': [True]}}

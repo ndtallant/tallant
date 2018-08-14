@@ -9,6 +9,7 @@ import logging
 import numpy as np
 import pandas as pd
 from time import strftime as st
+#from traceback import format_exc
 
 sys.path.append('../../')
 import grids
@@ -158,12 +159,14 @@ class MagicPipe():
             return p + ra 
 
         if self.task == 'regression':
+            print(len(self.y_test), len(y_pred)) 
             return [r2_score(self.y_test, y_pred)
-                , r2_score(self.y_train, y_pred) 
+            #    , r2_score(self.y_train, y_pred) 
                 , mean_squared_error(self.y_test, y_pred)
-                , mean_squared_error(self.y_train, y_pred)
+            #    , mean_squared_error(self.y_train, y_pred)
                 , MAPE(y_pred, self.y_test) 
-                , MAPE(y_pred, self.y_train)] 
+            #    , MAPE(y_pred, self.y_train)
+            ] 
 
     def _output(self, evals):
         out = dict(zip(self._header, evals))
@@ -187,18 +190,16 @@ class MagicPipe():
                     except Exception as e:
                         self.logger.debug('Evaluation failed: {}'.format(e)) 
             except Exception as e: 
-                self.logger.warning('Model failed: {}'.format(e)) 
+                self.logger.critical('Model failed: {}'.format(e)) 
                 continue
 
     # Binary Task Evaluation Helpers
-    #@staticmethod
     def pct_precision(self, y_scores, y_true, pct):
         '''Gets the precision score of a model for a given percentage targeted.'''
         y_scores, y_true = self.sort_by_score(np.array(y_scores), np.array(y_true))
         preds_at_k = self.classify_on_threshold(y_scores, pct)
         return precision_score(y_true, preds_at_k)
 
-    #@staticmethod
     def classify_on_threshold(self, y_scores, thr):
         '''
         Given sorted prediction scores and a threshold,
@@ -207,7 +208,6 @@ class MagicPipe():
         positive_bound = int(len(y_scores) * thr)
         return [1 if i < positive_bound else 0 for i in range(len(y_scores))]
 
-    #@staticmethod
     def sort_by_score(self, y_scores, y_true):
         '''
         Sorts scores and true values by scores in descending order.
