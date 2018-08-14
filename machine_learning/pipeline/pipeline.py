@@ -162,7 +162,7 @@ class MagicPipe():
     def _output(self, evals):
         out = dict(zip(self._header, evals) 
         self.logger.info(str(out))
-        # Add out to the df
+        self.report.loc[len(self.report)] = evals 
 
     def single_split_loop(self):
         for current in self.methods:
