@@ -1,7 +1,7 @@
 from sklearn.datasets import load_breast_cancer
 import sys
 sys.path.append('../')
-from pipeline.pipeline import MagicPipe
+from pipeline import MagicPipe
 from grids import test_clf, short_clf
 
 data = load_breast_cancer()

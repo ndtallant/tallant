@@ -1,7 +1,7 @@
 from sklearn.datasets import load_boston
 import sys
 sys.path.append('../')
-from pipeline.pipeline import MagicPipe
+from pipeline import MagicPipe
 from grids import test_reg, short_reg
 
 data = load_boston()
