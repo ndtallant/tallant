@@ -57,6 +57,8 @@ class Microsoft:
     SQL Server client? May need to compare all of these APIs and finally learn
     SQLAlchemy
     '''
+    def __init__(self):
+        raise NotImplementedError('Who uses SQL Server?')
 
 class Elephant:
     '''
