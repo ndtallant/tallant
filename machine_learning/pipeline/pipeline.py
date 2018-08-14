@@ -84,9 +84,9 @@ class MagicPipe():
     
     def _make_data(self, X, y):
         '''Makes Train-Test Splits''' 
-        if not isinstance(X, (pd.DataFrame, np.array)):
+        if not isinstance(X, (pd.DataFrame, np.ndarray)):
             raise ValueError("Must be array like object.")
-        if not isinstance(y, (pd.Series, np.array)):
+        if not isinstance(y, (pd.Series, np.ndarray)):
             raise ValueError("Must be 1-D array like object.")
         if isinstance(X, pd.DataFrame):
             self._features = X.columns
@@ -160,7 +160,7 @@ class MagicPipe():
                 , MAPE(y_pred, self.y_train)] 
 
     def _output(self, evals):
-        out = dict(zip(self._header, evals) 
+        out = dict(zip(self._header, evals))
         self.logger.info(str(out))
         self.report.loc[len(self.report)] = evals 
 
