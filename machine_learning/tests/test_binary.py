@@ -2,10 +2,14 @@ from sklearn.datasets import load_breast_cancer
 import sys
 sys.path.append('../')
 from pipeline.pipeline import MagicPipe
+from grids import test_clf, short_clf
 
 data = load_breast_cancer()
 X, y = data.data, data.target
-print(type(X), type(y))
-binary_pipe = MagicPipe(X=X, y=y, task='binary', methods=[]
-        , grid={}, logfile='')
 
+binary_pipe = MagicPipe(X=X, y=y, task='binary', method_list=test_clf
+        , grid=short_clf, logfile='')
+
+binary_pipe.single_split_loop()
+
+print(binary_pipe.report)

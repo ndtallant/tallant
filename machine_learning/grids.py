@@ -31,7 +31,7 @@ from sklearn.linear_model import Ridge
 from sklearn.linear_model import ElasticNet
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import TheilSenRegressor
-from sklearn.linear_model import PassiveAgressiveRegressor
+from sklearn.linear_model import PassiveAggressiveRegressor
 
 from sklearn.ensemble import BaggingRegressor 
 from sklearn.ensemble import AdaBoostRegressor
@@ -60,7 +60,7 @@ regressors = {'lm': LinearRegression(),
            'ridge': Ridge(),
          'elastic': ElasticNet(),
            'theil': TheilSenRegressor(),
-         'passive': PassiveAgressiveRegressor(),
+         'passive': PassiveAggressiveRegressor(),
              'bag': BaggingRegressor(), 
              'ada': AdaBoostRegressor(),
               'rf': RandomForestRegressor(),
