@@ -140,7 +140,7 @@ class MagicPipe():
                               , self.y_train).predict(self.X_test)
         return zip(*sorted(zip(y_pred, self.y_test), reverse=True))
     
-    def _evaluate(self, y_pred, y_true=None):
+    def _evaluate(self, y_pred, y_true=None, method=None):
         '''
         Using y_true instead of self.y_test for classification
         because they are sorted by the score.
@@ -159,14 +159,21 @@ class MagicPipe():
             return p + ra 
 
         if self.task == 'regression':
-            print(len(self.y_test), len(y_pred)) 
+            r2_trn, mse_trn, MAPE_trn = self._get_train_metrics(method) 
             return [r2_score(self.y_test, y_pred)
-            #    , r2_score(self.y_train, y_pred) 
+                , r2_trn 
                 , mean_squared_error(self.y_test, y_pred)
-            #    , mean_squared_error(self.y_train, y_pred)
+                , mse_trn
                 , MAPE(y_pred, self.y_test) 
-            #    , MAPE(y_pred, self.y_train)
+                , MAPE_trn
             ] 
+
+    def _get_train_metrics(self, method):
+        y_pred = method.fit(self.X_train, self.y_train).predict(self.X_train)
+        return [r2_score(self.y_train, y_pred) 
+                , mean_squared_error(self.y_train, y_pred)
+                , MAPE(y_pred, self.y_train)
+            ]
 
     def _output(self, evals):
         out = dict(zip(self._header, evals))
@@ -185,7 +192,9 @@ class MagicPipe():
                     y_pred, y_true = self._predict(method)
                     try:
                         self.logger.debug('Running Metrics') 
-                        evals = [current, params] + self._evaluate(y_pred, y_true)
+                        evals = [current, params] + self._evaluate(y_pred
+                                                                 , y_true
+                                                                 , method)
                         self._output(evals)
                     except Exception as e:
                         self.logger.debug('Evaluation failed: {}'.format(e)) 
