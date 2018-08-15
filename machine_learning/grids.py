@@ -107,3 +107,30 @@ short_clf = {'knn': {'n_neighbors': [5, 10, 25],
 
 short_reg = {'lm': {'fit_intercept': [True]}
         , 'lasso': {'fit_intercept': [True]}}
+
+
+long_reg = {'knn': {'n_neighbors': [1, 5, 10, 25, 50, 100],
+                  'weights': ['uniform', 'distance'],
+                  'algorithm': ['auto', 'ball_tree', 'kd_tree']},
+           
+          'dt': {'criterion': ['gini', 'entropy'], 
+                 'max_depth': [1, 5, 10, 20, 50, 100],
+                 'min_samples_split': [2, 5, 10]},
+
+          'logit': {'penalty': ['l1', 'l2'], 'C': [10**n for n in range(-4,2)]},
+    
+          'svm': {'C' :[10**n for n in range(-5,2)], 'kernel': ['linear']},
+    
+          'nb': {},
+    
+          'rf': {'n_estimators': [10, 100], 
+                 'max_depth': [5, 50], 
+                 'max_features': ['sqrt', 'log2'],
+                 'min_samples_split': [2, 10], 
+                 'n_jobs': [-1]},
+    
+          'gbc': {'n_estimators': [10,100], 'learning_rate' : [0.001,0.1,0.5],'subsample' : [0.1,0.5,1.0], 'max_depth': [5,50]},
+    
+          'bag': {}, # find params you like 
+    
+          'ada': {'algorithm': ['SAMME', 'SAMME.R'], 'n_estimators': [10**n for n in range(5)]}}
