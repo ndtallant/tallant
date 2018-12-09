@@ -1,5 +1,10 @@
-from setuptools import setup, find_packages
-setup(name='package_name',
-      version='0.1',
-      packages = find_packages(),
-      )
+from distutils.core import setup
+
+setup(
+    name='Tallant'
+    , version='0.1dev'
+    , packages=['tallant'
+            ,]
+    #, license='Creative Commons Attribution-Noncommercial-Share Alike license',
+    #long_description=open('README.txt').read(),
+)
