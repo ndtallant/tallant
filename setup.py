@@ -1,9 +1,9 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name='Tallant'
     , version='0.1dev'
-    , packages=['tallant']
+    , packages=find_packages()
     #'machine_learning'
     #        , 'policy'
     #        , 'stats'
