@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='Tallant'
     , version='0.1dev'
-    , packages=['tallant'
+    , packages=['tallant']
     #'machine_learning'
     #        , 'policy'
     #        , 'stats'
