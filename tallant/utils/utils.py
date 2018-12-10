@@ -8,6 +8,22 @@ import re
 import json
 import pandas as pd
 
+def get_floats(expression):
+    '''
+    Given an expression, this function returns
+    the digits and periods in that expression.
+    Assumes the expression is a single value.
+
+    Will round down if there is text in the 
+    middle of the digits :(
+
+    Example:
+    >>> get_floats("<2.506a:")
+    2.506
+    '''
+    matches = re.findall(r'\d*\.?\d*', str(expression))
+    return float([i for i in matches if i][0])
+
 def pad_zeroes(val, length, front=True):
     '''
     Pads zeroes to the front or end of a string
