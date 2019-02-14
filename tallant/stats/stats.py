@@ -6,12 +6,33 @@ This file contains functions / helpers for statistical analysis in python.
 '''
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
+from itertools import combinations
+from scipy import stats as scistat
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from statsmodels.tools.eval_measures import mse, rmse, bias
 
-def tukey(df, target, factor, sig_lvl=0.05):
+def correlation_summary(df, columns:list
+        , hm_kwargs={'vmin':0, 'vmax':1, 'annot':True}):
+    '''
+    Returns a seaborn heatmap (fig) of correlations for all given
+    columns and a dataframe with results of pearson tests between
+    every combination of 2 columns.
+    '''
+    corrs = df[columns].corr()
+    heatmap = sns.heatmap(corrs, **hm_kwargs ) 
+    l = [] 
+    for a, b in set(combinations(columns, 2)):    
+        r, p = scistat.pearsonr(df[a], df[b])        
+        l.append({'feature1': a
+            , 'feature2': b
+            , 'r': r
+            , 'p-value': p})
+    return heatmap, pd.DataFrame(l) 
+
+def tukey_summary(df, target, factor, sig_lvl=0.05):
     '''
     For deciding what levels within a factor constitute 
     significantly distinct groups. This function tests every
