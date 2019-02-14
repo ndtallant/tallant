@@ -8,6 +8,16 @@ import re
 import json
 import pandas as pd
 
+def attr_to_column(df, column:str, attr:str):
+    '''
+    Makes a column's underlying attribute or method 
+    into its own column. (In place)
+    
+    '''
+    df[attr] = df[column].apply(getattr, args=(attr,)) 
+    if callable(df[attr].reset_index().loc[0][attr]):
+        df[attr] = df[attr].apply(lambda s: s())
+
 def get_floats(expression):
     '''
     Given an expression, this function returns
@@ -75,7 +85,7 @@ def read_json(filename):
         data = f.read()
     return json.loads(data)
 
-def read_sql(filename, con):
+def read_sql_file(filename, con):
     '''Makes a dataframe from a sql file'''
     with open(filename) as f:
             sql = f.read()
