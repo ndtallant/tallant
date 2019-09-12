@@ -24,45 +24,12 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import label_binarize
 
 import seaborn as sns
-#import plotly.plotly as py
-#import plotly.graph_objs as go
 import matplotlib.pyplot as plt
-
-
-def load_data(data, verbose=True):
-    '''Loads in data to a dataframe.'''
-    if data.endswith('csv'):
-        df =  pd.read_csv(data)
-    elif data.endswith('json'):
-        df = pd.read_json(data)
-    else:
-        raise ValueError('I need a csv or json' )
-    snakify_cols(df) 
-    return df
 
 def factor_df(df):
     for feature in df.columns:
         if df[feature].dtype == 'O' and len(df[feature].unique()) > 2:
             df[feature] = df[feature].factorize()[0]
-
-def snakify_cols(df, verbose=True):
-   '''
-   Takes in a dataframe and alters the columns/features
-   to snake_case inplace.
-   '''
-   cols = {col:snakify(col, verbose=verbose) for col in df.columns}
-   df.rename(columns=cols, inplace=True)
-
-def scale_numeric(df):
-    for feature in df.columns:
-        if df[feature].dtype == 'int64':
-            try:
-                df[feature] = minmax_scale(df[feature])
-            except ValueError:
-                try:
-                    df[feature] = boxcox(df[feature])[0]
-                except: # I know ...
-                    continue
 
 def boxcox_df(df, feature_list):
     for feature in feature_list:
@@ -87,7 +54,6 @@ def quick_summary(df):
 def qsum_helper(df, feature):
     '''Returns single row to quick_summary''' 
     return [feature, 
-            #nan_scan(df, feature), 
             round(len(df[df[feature].isnull()]) / len(df) * 100), 
             get_var_cat(df, feature),
             len(df[feature].unique()),
@@ -109,12 +75,6 @@ def get_var_cat(df, feature):
         return 'Date'
     if unique_count == total_count:
         return 'Text (Unique)'
-
-def nan_scan(df, feature):
-    '''Scans for NaNs''' 
-    if df[feature].isnull().values.any():
-        return 'Yes' 
-    return ' No'
 
 def make_numeric(df, feature_list):
     '''Makes a given list of features numeric'''
@@ -139,59 +99,6 @@ def flip_a_bin(df, feature):
     except ValueError:
         print('Not binary')
     df[feature] = df[feature].apply(lambda x: pos if x == neg else neg)
-
-def binarize(df, true='t', false='f'):
-    '''Binarizes every column in a df, can set the true and false labels''' 
-    for feat in df.columns:
-        if set(df[feat].unique()) == set([false, true]):
-            df[feat] = label_binarize(df[feat], classes=[false, true])
-            df[feat] = df[feat].astype('category')
-
-def impute_mean(df, feature):
-    '''Imputes Nans as the mean, note the input as a series.'''
-    #imp = Imputer(copy=False, axis=1)
-    #array = df[feature].values.reshape(1, -1)
-    #df[feature].replace(df[feature], imp.fit_transform(array)[0], inplace=True)
-    mn = df[feature].dropna().mean()
-    df[feature].fillna(mn, inplace=True)
-
-def replace_na_random(feature, lower, upper):
-    '''
-    Replaces any Null values in a feature with a random int
-    between the lower and upper bounds
-    '''
-    # Look into Imputer classes from sk-learn
-    pass
-
-def bound_feature(feature):
-    '''why did you make this?''' 
-    foi = df[feature]
-    ok_vals = df[abs(df[feature]) < 1][feature]
-    foi = foi.where(abs(foi) < 1, ok_vals.mean())
-    df[feature] = foi
-
-def plot_numerics(df):
-    '''Plots every numeric feature in a df (box and hist)''' 
-    for feature in df.columns:
-        if df[feature].dtype != 'O' and len(df[feature].unique()) > 2:
-            plot_numeric(df, feature)
-            
-def plot_numeric(df, feature):
-    '''
-    Given a numeric feature, this function plots a 
-    box plot and a distribution.
-    '''
-    plt.figure(figsize=(15,6))
-    plt.subplot(1, 2, 1)
-    fig = sns.boxplot(y=df[feature])
-    fig.set_title('')
-    fig.set_ylabel(feature)
-    
-    plt.subplot(1, 2, 2)
-    fig = sns.distplot(df[feature].dropna())
-    fig.set_ylabel('')
-    fig.set_xlabel(feature)
-    plt.show()
 
 def snakify(feature, verbose=False):
     '''
