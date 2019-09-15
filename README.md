@@ -1,5 +1,5 @@
 # tallant
-A personal library of homemade packages.
+A personal python package for data analysis.
 
 Specifically,
 - `database.py`  A collection of python database clients.
