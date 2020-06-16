@@ -26,3 +26,10 @@ class Alchemist:
         if records:
             return self.engine.execute(query).fetchall()
         return pd.read_sql(query, self.engine)
+
+
+    def from_file(self, filepath, records=False):
+        '''Runs a query from a SQL file.'''
+        with open(filename) as f:
+            sql = f.read()
+        return self.query(sql, records)
