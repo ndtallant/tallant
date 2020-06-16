@@ -6,7 +6,6 @@ This file contains misc. helper functions
 '''
 import re
 import json
-import pandas as pd
 
 def attr_to_column(df, column:str, attr:str):
     '''
@@ -34,16 +33,6 @@ def get_floats(expression):
     matches = re.findall(r'\d*\.?\d*', str(expression))
     return float([i for i in matches if i][0])
 
-def pad_zeroes(val, length, front=True):
-    '''
-    Pads zeroes to the front or end of a string
-    given a length.
-    '''
-    if len(val) >= length:
-        return val
-    val = '0' + val if front else val + '0'
-    return pad_zeroes(val, length, front=front)
-
 def make_json(dictionary, filename):
     '''Makes a json from a dictionary'''
     data = json.dumps(dictionary)
@@ -57,8 +46,3 @@ def read_json(filename):
         data = f.read()
     return json.loads(data)
 
-def read_sql_file(filename, con):
-    '''Makes a dataframe from a sql file'''
-    with open(filename) as f:
-        sql = f.read()
-    return pd.read_sql(sql, con)

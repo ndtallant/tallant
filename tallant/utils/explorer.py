@@ -23,7 +23,7 @@ def get_column_category(feature):
     if pd.api.types.is_datetime64_dtype(feature):
         return 'Date'
     if feature.nunique(dropna=False) == len(feature):
-        return 'Text (Unique)'
+        return 'ID/Text (Unique)'
 
 def dumb_cats(df, drop=False, sparse=False):
     '''Dummifies all categorical features (dtype object)'''
