@@ -14,7 +14,7 @@ import pandas as pd
 class Alchemist:
     '''A wrapper around sqlalchemy.'''
 
-    def __init__(connection_string):
+    def __init__(self, connection_string):
         '''Takes in a connection string and sets up basic things you need.'''
         self.engine = sqlalchemy.create_engine(connection_string)        
         self.schemas = sqlalchemy.inspect(self.engine).get_schema_names()
