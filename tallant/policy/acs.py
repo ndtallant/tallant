@@ -36,7 +36,7 @@ class ACS:
         print(self.query.split('key')[0])
 
     def get_data(self):
-        response = requests.get(self.query)
+        response = requests.get(self.query, timeout=60)
         data = response.json()
         df =  pd.DataFrame(data)
         df.columns = list(df.loc[0]) 
