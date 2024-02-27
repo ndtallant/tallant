@@ -1,8 +1,8 @@
 # American Community Survey
 # OUTDATED - UPDATE ME :(
-import requests
 import numpy as np
 import pandas as pd
+from security import safe_requests
 
 class ACS:
     def __init__(self, year, dataset, codes, geography, key):
@@ -36,7 +36,7 @@ class ACS:
         print(self.query.split('key')[0])
 
     def get_data(self):
-        response = requests.get(self.query)
+        response = safe_requests.get(self.query)
         data = response.json()
         df =  pd.DataFrame(data)
         df.columns = list(df.loc[0]) 
