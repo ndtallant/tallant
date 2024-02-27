@@ -15,12 +15,13 @@ from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from statsmodels.tools.eval_measures import mse, rmse, bias
 
 def correlation_summary(df, columns:list
-        , hm_kwargs={'vmin':0, 'vmax':1, 'annot':True}):
+        , hm_kwargs=None):
     '''
     Returns a seaborn heatmap (fig) of correlations for all given
     columns and a dataframe with results of pearson tests between
     every combination of 2 columns.
     '''
+    hm_kwargs = {'vmin':0, 'vmax':1, 'annot':True} if hm_kwargs is None else hm_kwargs
     corrs = df[columns].corr()
     heatmap = sns.heatmap(corrs, **hm_kwargs ) 
     l = [] 
